@@ -1,4 +1,10 @@
-A0B36PR2
-========
+kniha jízd
 
-Semestální práce do předmětu A0B36PR2
+zaznamenává
+lidi 
+auta
+jízdy
+
+používá databázy pro ukládání a nčítání dat
+možnost vyhledávání
+exportu a importu databáze 
