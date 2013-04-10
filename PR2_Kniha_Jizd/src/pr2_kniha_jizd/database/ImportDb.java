@@ -15,7 +15,6 @@ public class ImportDb {
         } else {
             load(cesta);
         }
-
     }
 
     private void load(String cesta) {

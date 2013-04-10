@@ -35,8 +35,6 @@ public class MainGui extends JPanel implements ActionListener {
     private JButton btn_lide;
     
     
-   
-    
     // </editor-fold>
 
     public MainGui() {
@@ -44,7 +42,7 @@ public class MainGui extends JPanel implements ActionListener {
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         
         JPanel selectPanel = new JPanel(); //use FlowLayout
-      
+
         btn_jizdy = new JButton(jizdy);
         btn_auta = new JButton(auta);
         btn_lide = new JButton(lide);
@@ -262,7 +260,7 @@ public class MainGui extends JPanel implements ActionListener {
         }
         eventRepack(ae);
     }
-
+    
     private void delete(int sel) {
         String prikaz = "DELETE FROM app." + tabel_sel + "  WHERE " + tabel_sel + "ID=";
         new DbWrite(prikaz + sel);
