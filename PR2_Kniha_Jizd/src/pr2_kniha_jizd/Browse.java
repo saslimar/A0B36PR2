@@ -8,12 +8,10 @@ public class Browse extends JInternalFrame {
 
     private JFileChooser chooser;
 
-    public String saveDialog() {
+    public String saveDialog() {// metoda pro výbjer adresáře a názvu ukládaného textového souboru (vrací cestu k souboru nebo prázdný string nastane li zrušení při bjehu funkce)
         chooser = new JFileChooser();
         chooser.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("*.txt", "txt");
-
-
 
         chooser.addChoosableFileFilter(filter);
         chooser.setCurrentDirectory(new java.io.File("*.*"));
@@ -29,7 +27,7 @@ public class Browse extends JInternalFrame {
 
     }
 
-    public String loadDialog() {
+    public String loadDialog() {//metoda pro výbjer adresáře a souboru pro načtení dat  (vrací cestu k souboru nebo prázdný string nastane li zrušení při bjehu funkce)
         chooser = new JFileChooser();
         chooser.setAcceptAllFileFilterUsed(true);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("*.txt", "txt");
