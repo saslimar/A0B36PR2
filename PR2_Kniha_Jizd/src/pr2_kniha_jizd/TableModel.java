@@ -4,25 +4,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.table.AbstractTableModel;
 
-public class TableModel  extends AbstractTableModel {
+public class TableModel  extends AbstractTableModel {// třída dědící z AbstractTableModel potřebná pro správné zobrazení dat v tabulce
 
-    private ArrayList<String[]> data = new ArrayList<String[]>();
-    private String[] colum;
+    private ArrayList<String[]> data = new ArrayList<String[]>();// data později vypsaná v tabulce
+    private String[] colum;// popisky dat (jednotlivých sloupců)
 
-    public TableModel(String[] colum,String[][] data) {
+    public TableModel(String[] colum,String[][] data) { // konstruktor se vstupnímy daty
         this.colum = colum;
         if(data != null){
-            this.data.addAll(Arrays.asList(data));
+            this.data.addAll(Arrays.asList(data));//pokud nejsou data prázdná uložím je
         }
     }    
-    public boolean addContact(String[] k) {
+    public boolean addContact(String[] k) {    //pridat zaznam do tabulky
         return data.add(k);
     }
-
-    public boolean delContact(String[] k) {
+    public boolean delContact(String[] k) {// odebrat záznam
         return data.remove(k);
     }
-
+    // getry setry 
     @Override
     public String getColumnName(int column) {
         return colum[column];
