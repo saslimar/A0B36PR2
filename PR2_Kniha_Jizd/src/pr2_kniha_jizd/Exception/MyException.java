@@ -1,40 +1,40 @@
 package pr2_kniha_jizd.Exception;
 
-public class MyException extends Exception{
-    private String exceprionMsg="";
-    private boolean show;
-    public MyException(Throwable thrwbl) {
+public class MyException extends Exception{// vlastní třída dědíci z exception
+    private String exceprionMsg="";// vlastní chybová hláška
+    private boolean show;// informace o tom máli se vyhodit nebo nemá
+    public MyException(Throwable thrwbl) {// konstruktor
         super(thrwbl);
     }
 
-    public MyException(String string, Throwable thrwbl) {
+    public MyException(String string, Throwable thrwbl) {// kontruktor
         super(string, thrwbl);
     }
 
-    public MyException(String string) {
+    public MyException(String string) {//kontruktor
         super(string);
     }
 
-    public MyException() {
+    public MyException() {//kontruktor
     }
     
-    public void addException(String exception)
+    public void addException(String exception)// přidání textu k puvodnímu textu chyby
     {
         exceprionMsg += exception+"\n";
     }
     
-    public boolean isException()
+    public boolean isException()// má se chyba vyhodit
     {
         if("".equals(exceprionMsg))
             return false;
         else
             return true;
     }
-    public void setException()
+    public void setException()// vynulování textu chyby
     {
         exceprionMsg = "";
     }
-    public String getException()
+    public String getException()// vrátí text chyby
     {
         if(!"".equals(exceprionMsg))
         {
@@ -46,7 +46,7 @@ public class MyException extends Exception{
         return show;
     }
 
-    public void setShow(boolean show) {
+    public void setShow(boolean show) {// set show
         this.show = show;
     }
     
