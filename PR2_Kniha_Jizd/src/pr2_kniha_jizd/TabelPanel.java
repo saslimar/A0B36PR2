@@ -6,16 +6,16 @@ import java.awt.Color;
 import javax.swing.JTable;
 import javax.swing.JPanel;
 
-public class TabelPanel extends JPanel {
+public class TabelPanel extends JPanel {// panel z tabulkou
 
-    private JTable table;
+    private JTable table; //mýstní tabulka
 
-    public TabelPanel(String prikaz) {
-        DbRead k = new DbRead(prikaz);
-        show(k.getData(), k.getColum());
+    public TabelPanel(String prikaz) {// konstruktor jako vstupní promnená je databázový příkaz
+        DbRead k = new DbRead(prikaz);// volání třídy která vytáhne data z databáze
+        show(k.getData(), k.getColum());// 
     }
 
-    private void show(String[][] data, String[] colum) {
+    private void show(String[][] data, String[] colum) {// metoda která vezme data a zobrazý je do tabulky 
         table = new JTable(new TableModel(colum, data));
         table.setShowHorizontalLines(true);
         table.setShowVerticalLines(true);
@@ -27,7 +27,7 @@ public class TabelPanel extends JPanel {
         this.add(table, BorderLayout.CENTER);
     }
 
-    public JTable getTable() {
+    public JTable getTable() {/// getr tabulky
         return table;
     }
 }
