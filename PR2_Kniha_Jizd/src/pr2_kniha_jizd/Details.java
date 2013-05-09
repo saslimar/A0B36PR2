@@ -16,8 +16,8 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-public class Details extends JDialog implements ActionListener, DocumentListener {
-
+public class Details extends JDialog implements ActionListener, DocumentListener {//třída vytahne z DB všechny související záznamy a zobrazí je
+// s možnosti uložení do souboru s vlastnímy upravamy
     private JPanel panel = new JPanel();
     private JButton save = new JButton("Save");
     private JButton cancel = new JButton("Cancel");
@@ -26,20 +26,20 @@ public class Details extends JDialog implements ActionListener, DocumentListener
     String[] colum;
     String[][] data;
 
-    public Details(String tab_sel, Integer id) {
+    public Details(String tab_sel, Integer id) {// konstruktor příjmá data o kterou tabulku se jedná a jake je id zaznamu 
         print(tab_sel, id);
         text.getDocument().addDocumentListener(this);
     }
 
-    private void print(String tab_sel, Integer id) {
+    private void print(String tab_sel, Integer id) {// metoda načte data z databáze a zobrazý je 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         String prikaz = "select * from APP." + tab_sel + " where " + tab_sel + "ID = " + id;
         JPanel dataPanel = new JPanel();
-        DbRead db = new DbRead(prikaz);
-        colum = db.getColum();
-        data = db.getData();
+        DbRead db = new DbRead(prikaz);// volání databáze z daným příkazem
+        colum = db.getColum();// vrací hodnoty z databáze
+        data = db.getData();// vrací hodnoty z databáze
 
-        if ("RIDE".equals(tab_sel)) {
+        if ("RIDE".equals(tab_sel)) {// sežazení výpisu podle typu zobrazovaných dat
             printRide(id);
             printDriver(Integer.parseInt(data[0][data[0].length - 2]));
             printCar(Integer.parseInt(data[0][data[0].length - 1]));
@@ -93,7 +93,7 @@ public class Details extends JDialog implements ActionListener, DocumentListener
 
     }
 
-    private void printDriver(Integer id) {
+    private void printDriver(Integer id) {// vipíše data o řidičovy s ID
         DbRead db = new DbRead("select * from APP.DRIVER where DRIVERID =" + id);
         String[] colum = db.getColum();
         String[][] data = db.getData();
@@ -109,7 +109,7 @@ public class Details extends JDialog implements ActionListener, DocumentListener
 
     }
 
-    private void printCar(Integer id) {
+    private void printCar(Integer id) {// vipíše data o autě s ID
         DbRead db = new DbRead("select * from APP.CAR where CARID =" + id);
         String[] colum = db.getColum();
         String[][] data = db.getData();
@@ -125,7 +125,7 @@ public class Details extends JDialog implements ActionListener, DocumentListener
 
     }
 
-    private void printRide(Integer id) {
+    private void printRide(Integer id) {// vipíše data o jízdě s ID
         DbRead db = new DbRead("select * from APP.ride where RIDEID =" + id);
         String[] colum = db.getColum();
         String[][] data = db.getData();
@@ -143,12 +143,12 @@ public class Details extends JDialog implements ActionListener, DocumentListener
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getActionCommand().equals("Cancel")) {
+        if (ae.getActionCommand().equals("Cancel")) {// zmačnuli cancel tabulka nám zmizý
             this.setVisible(false);
         }
-        if (ae.getActionCommand().equals("Save")) {
-            if (edit) {
-                switch (JOptionPane.showConfirmDialog(this, "Data byla editována  \n Pokračovat?", "varování", JOptionPane.OK_CANCEL_OPTION)) {
+        if (ae.getActionCommand().equals("Save")) {// zmačknuli uložit
+            if (edit) {// ovjeřím zda bylo editováno
+                switch (JOptionPane.showConfirmDialog(this, "Data byla editována  \n Pokračovat?", "varování", JOptionPane.OK_CANCEL_OPTION)) {// zeptam se zda uložit s editací pro případ že by byla náhodnoá
                     case JOptionPane.CANCEL_OPTION:
                         break;
                     case JOptionPane.OK_OPTION:
@@ -158,15 +158,15 @@ public class Details extends JDialog implements ActionListener, DocumentListener
                         break;
                 }
 
-            } else {
-                String cesta = new Browse().saveDialog();
-                saveToTxt(cesta, text.getText());
-                this.setVisible(false);
+            } else {// pokud editovano nebylo jednoduše uložím
+                String cesta = new Browse().saveDialog();// načtu cestu k souboru
+                saveToTxt(cesta, text.getText());// zavolám uložení
+                this.setVisible(false);// a schovám zobrazovací okno
             }
         }
     }
 
-    private void saveToTxt(String cesta, String data) {
+    private void saveToTxt(String cesta, String data) {// metoda uloží data co souboru 
         if (cesta == null || cesta.equals("")) {
         } else {
             try {
@@ -180,17 +180,17 @@ public class Details extends JDialog implements ActionListener, DocumentListener
     }
 
     @Override
-    public void insertUpdate(DocumentEvent de) {
+    public void insertUpdate(DocumentEvent de) {// posluchač na editaci zobrazeneho textu\
         edit = true;
     }
 
     @Override
-    public void removeUpdate(DocumentEvent de) {
+    public void removeUpdate(DocumentEvent de) {// posluchač na editaci zobrazeneho textu\
         edit = true;
     }
 
     @Override
-    public void changedUpdate(DocumentEvent de) {
+    public void changedUpdate(DocumentEvent de) {// posluchač na editaci zobrazeneho textu\
         edit = true;
     }
 }
