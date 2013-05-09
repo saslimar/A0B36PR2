@@ -19,7 +19,7 @@ import javax.swing.event.DocumentListener;
 import pr2_kniha_jizd.Exception.MyException;
 import pr2_kniha_jizd.Exception.MyExceptionDetector;
 
-public class DriverAdd extends JDialog implements ActionListener, DocumentListener {
+public class DriverAdd extends JDialog implements ActionListener, DocumentListener {// naprosto stejná podstata CarEdit
 
     private JPanel panel = new JPanel();
     private JTextField txtJmeno = new JTextField();
