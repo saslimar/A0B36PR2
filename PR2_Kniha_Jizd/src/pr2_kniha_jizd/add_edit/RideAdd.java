@@ -19,7 +19,7 @@ import pr2_kniha_jizd.Exception.MyException;
 import pr2_kniha_jizd.Exception.MyExceptionDetector;
 import pr2_kniha_jizd.database.DbWrite;
 
-public class RideAdd extends JDialog implements ActionListener, DocumentListener {
+public class RideAdd extends JDialog implements ActionListener, DocumentListener {// viis car add
 
     private JPanel panel = new JPanel();
     private JTextField txtDatum = new JTextField();
