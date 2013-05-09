@@ -19,7 +19,7 @@ import javax.swing.event.DocumentListener;
 import pr2_kniha_jizd.Exception.MyException;
 import pr2_kniha_jizd.Exception.MyExceptionDetector;
 
-public class CarAdd extends JDialog implements ActionListener, DocumentListener {
+public class CarAdd extends JDialog implements ActionListener, DocumentListener {// dialogove okno přispusobené k zadávání a upravje zaznamu o autě
 
     private JPanel panel = new JPanel();
     private JTextField txtSpz = new JTextField();
@@ -29,17 +29,16 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
     private int select;
     private boolean edit = false;
 
-    public CarAdd() {
+    public CarAdd() {// prázdný konstruktor volám pokud chci vytvořit prázdné okno pro přidání záznamu
         print();
     }
 
-    public CarAdd(String prikaz, int select) {
-
+    public CarAdd(String prikaz, int select) {// kontruktor pro upravu záznamu příkaz je databázový příkaz a select je databazove ID
         this.select = select;
         edit = true;
-        DbRead k = new DbRead(prikaz);
+        DbRead k = new DbRead(prikaz);// vytahnu data z databáze
         String[][] data = k.getData();
-        txtZnacka.setText(data[0][1]);
+        txtZnacka.setText(data[0][1]);// a naplním jimy požadovaná políčka
         txtSpz.setText(data[0][2]);
         txtTyp.setText(data[0][3]);
 
@@ -49,7 +48,7 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
         print();
     }
 
-    private void print() {
+    private void print() {//  vykreslím gui
         txtSpz.getDocument().addDocumentListener(this);
         txtTyp.getDocument().addDocumentListener(this);
         txtZnacka.getDocument().addDocumentListener(this);
@@ -85,7 +84,7 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
     }
 
     @Override
-    public void actionPerformed(ActionEvent ae) {
+    public void actionPerformed(ActionEvent ae) {// posluchač zažizuje ukládání do dtabáze nového záznamu a kontrolu zadanách dat
         if (ae.getActionCommand().equals("Cancel")) {
             this.setVisible(false);
         }
@@ -140,24 +139,24 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
         }
     }
 
-    private void rePrintColor() {
+    private void rePrintColor() { // vyčištění barev varovných pozadí z5 na býlou
         txtSpz.setBackground(Color.WHITE);
         txtTyp.setBackground(Color.WHITE);
         txtZnacka.setBackground(Color.WHITE);
     }
 
     @Override
-    public void insertUpdate(DocumentEvent de) {
+    public void insertUpdate(DocumentEvent de) {// posluchač editace
         rePrintColor();
     }
 
     @Override
-    public void removeUpdate(DocumentEvent de) {
+    public void removeUpdate(DocumentEvent de) {// posluchač editace
         rePrintColor();
     }
 
     @Override
-    public void changedUpdate(DocumentEvent de) {
+    public void changedUpdate(DocumentEvent de) {// posluchač editace
         rePrintColor();
     }
 }
