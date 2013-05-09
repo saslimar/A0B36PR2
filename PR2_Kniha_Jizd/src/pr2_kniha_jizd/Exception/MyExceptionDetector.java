@@ -7,16 +7,16 @@ import java.util.ArrayList;
 import javax.swing.JTextField;
 import pr2_kniha_jizd.database.DbRead;
 
-public class MyExceptionDetector {
+public class MyExceptionDetector {// třída kontrolující chiby
 
     public static final int CAR_ADD = 1;
     public static final int CAR_EDIT = 2;
     public static final int DRIVER_ADD = 3;
     public static final int DRIVER_EDIT = 4;
-    public static final int RIDE_ADD_EDIT = 5;
+    public static final int RIDE_ADD_EDIT = 5; // konstanty určující o jakou kontrolu jde
     private int select;
 
-    public MyExceptionDetector() throws MyException {
+    public MyExceptionDetector() throws MyException {// konstruktory
         throw (new MyException());
     }
 
@@ -31,12 +31,11 @@ public class MyExceptionDetector {
 
     private void ExceptionDetect(ArrayList<JTextField> text, int exceptionconstants) throws MyException {
 
-        if (exceptionconstants == RIDE_ADD_EDIT) {
-
-            MyException ex = new MyException();
+        if (exceptionconstants == RIDE_ADD_EDIT) {// kontrola jednotlivých chyb podle zadanách konstant
+            MyException ex = new MyException();// vytvožím si instanci své chybi
             for (JTextField tf : text) {
-                if ("".equals(tf.getText())) {
-                    ex.addException("neuvedeny informace ( " + tf.getName() + " )");
+                if ("".equals(tf.getText())) {// nejsou li informace spracne
+                    ex.addException("neuvedeny informace ( " + tf.getName() + " )"); // přidám své chybje zaznam o tom co je špatně
                     tf.setBackground(Color.RED);
                 }
             }
@@ -46,8 +45,8 @@ public class MyExceptionDetector {
                 ex.addException("datum bylo zadáno ve špatném formátu zadejte prosím (yyyy-MM-dd)");
                 text.get(0).setBackground(Color.RED);
             }
-            if (ex.isException()) {
-                throw ex;
+            if (ex.isException()) {// pokud mam v chybje zaznam o chybje 
+                throw ex;// vyhodim jí
             }
         }
         if (exceptionconstants == DRIVER_ADD || exceptionconstants == DRIVER_EDIT) {
