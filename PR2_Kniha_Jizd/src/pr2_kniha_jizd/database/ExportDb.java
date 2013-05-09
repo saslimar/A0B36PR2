@@ -5,34 +5,34 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import pr2_kniha_jizd.Browse;
 
-public class ExportDb {
-    public ExportDb() {
-    String cesta = new Browse().saveDialog();
+public class ExportDb {// třída obstarávající exportování databáze do souboru pro pozdější import
+    public ExportDb() {// tato třída má prázdnáýý konstruktor veškerou funkci si obstarává sama
+    String cesta = new Browse().saveDialog();// načte si cestu pro uložení souboru
     String select = "DRIVER";
-    String data = getString(select);
+    String data = getString(select);//načtu veškerá data z databáze v promyšleném formátu do jendoho stringu
     select = "CAR";
         data += getString(select);
     select = "RIDE";
             data += getString(select);
-    saveToTxt(cesta, data);
+    saveToTxt(cesta, data);// tento string pak uložim na vybrané mýsto
     }
-    private void saveToTxt(String cesta, String data)        
+    private void saveToTxt(String cesta, String data)  // metoda pro uložení      
     {
-        if(cesta == null || cesta.equals(""))
+        if(cesta == null || cesta.equals(""))// kontrola cesty
         {
         }else{
                 try {
-                FileWriter outFile = new FileWriter(cesta, true);
-                PrintWriter out = new PrintWriter(outFile);
-                out.print(data);
-                out.close();
+                FileWriter outFile = new FileWriter(cesta, true);// otevžení souoru
+                PrintWriter out = new PrintWriter(outFile);// nastavení zapisu
+                out.print(data);// zapsaní dat
+                out.close();// zavření souboru
             } catch (IOException e) {
             }
         }
     }
-    private String getString(String select)
+    private String getString(String select)// metoda vrací data v příslušném formátu ze zadané tabulky 
     {
-        DbRead db = new DbRead("select * from APP."+select);
+        DbRead db = new DbRead("select * from APP."+select);// vytažení dat z databáze
         String[] colum = db.getColum();
         String[][] data = db.getData();
         String add ="INSERT INTO \"APP\".\""+select+"\"(";
