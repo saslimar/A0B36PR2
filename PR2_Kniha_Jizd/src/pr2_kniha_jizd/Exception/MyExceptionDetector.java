@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JTextField;
-import pr2_kniha_jizd.database.DbRead;
+import pr2_kniha_jizd.database.DbAccess;
 
 public class MyExceptionDetector {// třída kontrolující chiby
 
@@ -66,7 +66,7 @@ public class MyExceptionDetector {// třída kontrolující chiby
             if (ex.isException()) {
                 throw ex;
             }
-            String[][] data = new DbRead("select * from APP.DRIVER WHERE JMENO='" + text.get(0).getText() + "' and PRIJMENI='" + text.get(1).getText() + "' and DATUM_NAROZENI ='" + text.get(2).getText() + "'").getData();
+            String[][] data = new DbAccess(true, "select * from APP.DRIVER WHERE JMENO='" + text.get(0).getText() + "' and PRIJMENI='" + text.get(1).getText() + "' and DATUM_NAROZENI ='" + text.get(2).getText() + "'").getData();
             if (data != null) {
                 if (exceptionconstants == DRIVER_EDIT) {
                     if (Integer.parseInt(data[0][0]) != select) {
@@ -97,7 +97,7 @@ public class MyExceptionDetector {// třída kontrolující chiby
             if (ex.isException()) {
                 throw ex;
             }
-            String[][] data = new DbRead("SELECT SPZ,CarID FROM app.CAR").getData();
+            String[][] data = new DbAccess(true, "SELECT SPZ,CarID FROM app.CAR").getData();
             if (data != null) {
                 for (int x = 0; x < data.length; x++) {
                     if (data[x][0].equals(text.get(0).getText())) {

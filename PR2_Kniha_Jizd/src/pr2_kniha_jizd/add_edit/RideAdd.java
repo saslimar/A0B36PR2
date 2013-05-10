@@ -1,6 +1,5 @@
 package pr2_kniha_jizd.add_edit;
 
-import pr2_kniha_jizd.database.DbRead;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Label;
@@ -17,7 +16,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import pr2_kniha_jizd.Exception.MyException;
 import pr2_kniha_jizd.Exception.MyExceptionDetector;
-import pr2_kniha_jizd.database.DbWrite;
+import pr2_kniha_jizd.database.DbAccess;
 
 public class RideAdd extends JDialog implements ActionListener, DocumentListener {// viis car add
 
@@ -40,7 +39,7 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
     public RideAdd(String prikaz, int select) {
         this.select = select;
         edit = true;
-        DbRead k = new DbRead(prikaz);
+        DbAccess k = new DbAccess(true, prikaz);
         String[][] data = k.getData();
         txtDatum.setText(data[0][1]);
         txtOdkud.setText(data[0][2]);
@@ -127,7 +126,7 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
     }
 
     private String[] getData(String prikaz) {
-        String[][] data_ = new DbRead(prikaz).getData();
+        String[][] data_ = new DbAccess(true, prikaz).getData();
         String[] data = new String[data_.length];
         for (int x = 0; x < data_.length; x++) {
             data[x] = data_[x][0];
@@ -136,9 +135,8 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
 
     }
 
-    private Integer[] getDataInt(String prikaz)
-    {
-        String[][] data_ = new DbRead(prikaz).getData();
+    private Integer[] getDataInt(String prikaz) {
+        String[][] data_ = new DbAccess(true, prikaz).getData();
         Integer[] data = new Integer[data_.length];
         for (int x = 0; x < data_.length; x++) {
             data[x] = Integer.parseInt(data_[x][0]);
@@ -202,7 +200,7 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
                             + ")";
                 }
 
-                new DbWrite(prikaz);
+                new DbAccess(false, prikaz);
                 this.setVisible(false);
             } catch (MyException ex) {
                 if (ex.isShow()) {

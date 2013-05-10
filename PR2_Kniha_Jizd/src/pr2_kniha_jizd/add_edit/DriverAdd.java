@@ -1,7 +1,5 @@
 package pr2_kniha_jizd.add_edit;
 
-import pr2_kniha_jizd.database.DbWrite;
-import pr2_kniha_jizd.database.DbRead;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -18,6 +16,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import pr2_kniha_jizd.Exception.MyException;
 import pr2_kniha_jizd.Exception.MyExceptionDetector;
+import pr2_kniha_jizd.database.DbAccess;
 
 public class DriverAdd extends JDialog implements ActionListener, DocumentListener {// naprosto stejná podstata CarEdit
 
@@ -35,7 +34,7 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
     public DriverAdd(String prikaz, int select) {
         this.select = select;
         edit = true;
-        DbRead k = new DbRead(prikaz);
+        DbAccess k = new DbAccess(true, prikaz);
         String[][] data = k.getData();
         txtJmeno.setText(data[0][1]);
         txtPrijmeni.setText(data[0][2]);
@@ -99,7 +98,7 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
                             + "PRIJMENI='" + txtPrijmeni.getText() + "',"
                             + "DATUM_NAROZENI={d '" + txtdatum.getText() + "'} "
                             + "WHERE DRIVERID = " + select;
-                    new DbWrite(prikaz);
+                    new DbAccess(false, prikaz);
                     this.setVisible(false);
                 } catch (MyException ex) {
                     if (ex.isShow()) {
@@ -115,7 +114,7 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
                             + "'" + txtPrijmeni.getText() + "',"
                             + "{d '" + txtdatum.getText() + "'})";
 
-                    new DbWrite(prikaz);
+                    new DbAccess(false, prikaz);
                     this.setVisible(false);
 
                 } catch (MyException ex) {

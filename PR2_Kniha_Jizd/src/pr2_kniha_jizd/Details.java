@@ -1,6 +1,5 @@
 package pr2_kniha_jizd;
 
-import pr2_kniha_jizd.database.DbRead;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
@@ -16,8 +15,11 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import pr2_kniha_jizd.database.DbAccess;
+
 public class Details extends JDialog implements ActionListener, DocumentListener {//třída vytahne z DB všechny související záznamy a zobrazí je
 // s možnosti uložení do souboru s vlastnímy upravamy
+
     private JPanel panel = new JPanel();
     private JButton save = new JButton("Save");
     private JButton cancel = new JButton("Cancel");
@@ -35,7 +37,7 @@ public class Details extends JDialog implements ActionListener, DocumentListener
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         String prikaz = "select * from APP." + tab_sel + " where " + tab_sel + "ID = " + id;
         JPanel dataPanel = new JPanel();
-        DbRead db = new DbRead(prikaz);// volání databáze z daným příkazem
+        DbAccess db = new DbAccess(true, prikaz);// volání databáze z daným příkazem
         colum = db.getColum();// vrací hodnoty z databáze
         data = db.getData();// vrací hodnoty z databáze
 
@@ -46,7 +48,7 @@ public class Details extends JDialog implements ActionListener, DocumentListener
         }
         if ("DRIVER".equals(tab_sel)) {
             printDriver(id);
-            String[][] rideId = new DbRead("select RIDEID,CARID from APP.ride where DRIVERID =" + id).getData();
+            String[][] rideId = new DbAccess(true, "select RIDEID,CARID from APP.ride where DRIVERID =" + id).getData();
             if (rideId != null) {
                 for (int x = 0; x < rideId.length; x++) {
                     printRide(Integer.parseInt(rideId[x][0]));
@@ -56,13 +58,11 @@ public class Details extends JDialog implements ActionListener, DocumentListener
         }
         if ("CAR".equals(tab_sel)) {
             printCar(id);
-            String[][] rideId = new DbRead("select RIDEID,DRIVERID from APP.ride where CARID =" + id).getData();
+            String[][] rideId = new DbAccess(true, "select RIDEID,DRIVERID from APP.ride where CARID =" + id).getData();
             if (rideId != null) {
                 for (int x = 0; x < rideId.length; x++) {
                     printRide(Integer.parseInt(rideId[x][0]));
                     printDriver(Integer.parseInt(rideId[x][1]));
-
-
                 }
             }
 
@@ -94,7 +94,7 @@ public class Details extends JDialog implements ActionListener, DocumentListener
     }
 
     private void printDriver(Integer id) {// vipíše data o řidičovy s ID
-        DbRead db = new DbRead("select * from APP.DRIVER where DRIVERID =" + id);
+        DbAccess db = new DbAccess(true, "select * from APP.DRIVER where DRIVERID =" + id);
         String[] colum = db.getColum();
         String[][] data = db.getData();
         text.setText(text.getText() + "ŘIDIČ\n_________________\n");
@@ -110,7 +110,7 @@ public class Details extends JDialog implements ActionListener, DocumentListener
     }
 
     private void printCar(Integer id) {// vipíše data o autě s ID
-        DbRead db = new DbRead("select * from APP.CAR where CARID =" + id);
+        DbAccess db = new DbAccess(true, "select * from APP.CAR where CARID =" + id);
         String[] colum = db.getColum();
         String[][] data = db.getData();
         text.setText(text.getText() + "AUTO\n_________________\n");
@@ -126,7 +126,7 @@ public class Details extends JDialog implements ActionListener, DocumentListener
     }
 
     private void printRide(Integer id) {// vipíše data o jízdě s ID
-        DbRead db = new DbRead("select * from APP.ride where RIDEID =" + id);
+        DbAccess db = new DbAccess(true, "select * from APP.ride where RIDEID =" + id);
         String[] colum = db.getColum();
         String[][] data = db.getData();
         text.setText(text.getText() + "Jízda\n_________________\n");

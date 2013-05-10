@@ -59,12 +59,12 @@ public class ImportDb {
                     }
                 }
             }
-            if (new DbRead(is).getData() == null) {
-                new DbWrite(data);
+            if (new DbAccess(true, is).getData() == null) {
+                new DbAccess(false, data);
             } else {
             }
         } else if (data.indexOf("\"APP\".\"RIDE\"") != -1) {
-            new DbWrite(data);
+            new DbAccess(false, data);
         } else {
         }
     }

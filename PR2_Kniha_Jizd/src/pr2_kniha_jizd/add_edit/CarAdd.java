@@ -1,7 +1,5 @@
 package pr2_kniha_jizd.add_edit;
 
-import pr2_kniha_jizd.database.DbWrite;
-import pr2_kniha_jizd.database.DbRead;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Label;
@@ -18,6 +16,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import pr2_kniha_jizd.Exception.MyException;
 import pr2_kniha_jizd.Exception.MyExceptionDetector;
+import pr2_kniha_jizd.database.DbAccess;
 
 public class CarAdd extends JDialog implements ActionListener, DocumentListener {// dialogove okno přispusobené k zadávání a upravje zaznamu o autě
 
@@ -36,7 +35,7 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
     public CarAdd(String prikaz, int select) {// kontruktor pro upravu záznamu příkaz je databázový příkaz a select je databazove ID
         this.select = select;
         edit = true;
-        DbRead k = new DbRead(prikaz);// vytahnu data z databáze
+        DbAccess k = new DbAccess(true, prikaz);// vytahnu data z databáze
         String[][] data = k.getData();
         txtZnacka.setText(data[0][1]);// a naplním jimy požadovaná políčka
         txtSpz.setText(data[0][2]);
@@ -107,12 +106,11 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
                             + "DRUH=" + typtext + " "
                             + ",firemni = '" + (firemni.isSelected() ? "ano" : "ne") + "'"
                             + "WHERE CARID =" + select;
-                    new DbWrite(prikaz);
+                    new DbAccess(false, prikaz);
                     this.setVisible(false);
                 } catch (MyException ex) {
-                    if(ex.isShow())
-                    {
-                         JOptionPane.showMessageDialog(this, ex.getException());
+                    if (ex.isShow()) {
+                        JOptionPane.showMessageDialog(this, ex.getException());
                     }
                 }
             } else {
@@ -124,14 +122,13 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
                             + typtext + ","
                             + "'" + (firemni.isSelected() ? "ano" : "ne") + "')";
 
-                    new DbWrite(prikaz);
+                    new DbAccess(false, prikaz);
                     this.setVisible(false);
 
 
                 } catch (MyException ex) {
-                   if(ex.isShow())
-                    {
-                         JOptionPane.showMessageDialog(this, ex.getException());
+                    if (ex.isShow()) {
+                        JOptionPane.showMessageDialog(this, ex.getException());
                     }
                 }
             }
