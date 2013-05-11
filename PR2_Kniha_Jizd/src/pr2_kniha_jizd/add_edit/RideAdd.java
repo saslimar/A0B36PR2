@@ -1,11 +1,15 @@
 package pr2_kniha_jizd.add_edit;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -35,7 +39,13 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
     private Integer[] poleIdCar;
     private int select;
     private boolean edit = false;
-
+    /// datum 
+    private JComboBox combYear;
+    private JComboBox combMonth;
+    private JComboBox combDey;
+    private GregorianCalendar calendarMy;
+    private Calendar kal = Calendar.getInstance();
+    /// datum end
     public RideAdd(String prikaz, int select) {
         this.select = select;
         edit = true;
@@ -69,7 +79,45 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
         panel.setLayout(new GridLayout(9, 2));
 
         panel.add(new Label("Datum jízdy"));
-        panel.add(txtDatum);
+        //// combo boxy 
+        calendarMy = new GregorianCalendar();
+        Integer[] year = new Integer[(100)];
+        for (int x = -1; x < 99; x++) {
+            year[x+1] = calendarMy.get(Calendar.YEAR) - x;
+        }
+        int maxDey = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+        Integer[] deys = new Integer[maxDey];
+        for (int x = 0; x < maxDey; x++) {
+            deys[x] = (x + 1);
+        }
+
+        JPanel datum = new JPanel(new FlowLayout());
+        combYear = new JComboBox(year);
+        combYear.setSelectedItem((calendarMy.get(Calendar.YEAR)));
+        combYear.addActionListener(this);
+        combYear.setPreferredSize(new Dimension(82, 28));
+        datum.add(combYear);
+
+        combMonth = new JComboBox(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+        combMonth.setSelectedItem((calendarMy.get(Calendar.MONTH)) + 1);
+        combMonth.addActionListener(this);
+        combMonth.setPreferredSize(new Dimension(66, 28));
+        datum.add(combMonth);
+
+        combDey = new JComboBox(deys);
+        combDey.setSelectedItem(calendarMy.get(Calendar.DATE));
+        combDey.addActionListener(this);
+        combDey.setPreferredSize(new Dimension(66, 28));
+        datum.add(combDey);
+
+        if (edit) {
+            combYear.setSelectedItem(Integer.parseInt(txtDatum.getText().substring(0, 4)));
+            combMonth.setSelectedItem(Integer.parseInt(txtDatum.getText().substring(5, 7)));
+            combDey.setSelectedItem(Integer.parseInt(txtDatum.getText().substring(8, 10)));
+        }
+        panel.add(datum);
+        
+        /// comboboxy end
         panel.add(new Label("Odkud :"));
         panel.add(txtOdkud);
         panel.add(new Label("Kam :"));
@@ -147,6 +195,20 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
 
     @Override
     public void actionPerformed(ActionEvent ae) {
+        if (ae.getSource() instanceof JComboBox) {
+            JComboBox c = (JComboBox) ae.getSource();
+            if (c == combMonth) {
+                int x = (Integer) combYear.getSelectedItem();
+                int y = (Integer) combMonth.getSelectedItem() - 1;
+                int z = (Integer) combDey.getSelectedItem();
+                kal.set(x, y, z);
+                combDey.removeAllItems();
+                int maxDey = kal.getActualMaximum(kal.DAY_OF_MONTH);
+                for (int a = 0; a < maxDey; a++) {
+                    combDey.addItem((a + 1));
+                }
+            }
+        } else {
         if (ae.getActionCommand().equals("Cancel")) {
             this.setVisible(false);
         }
@@ -159,6 +221,8 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
             txtDuvod.setName("duvod");
             txtDatum.setName("datum");
 
+            txtDatum.setText(combYear.getSelectedItem() + "-" + (((Integer) combMonth.getSelectedItem())) + "-" + combDey.getSelectedItem());
+            
             aray.add(txtDatum);
             aray.add(txtOdkud);
             aray.add(txtKam);
@@ -208,7 +272,8 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
                 }
             }
         }
-    }
+        }
+        }
 
     private void rePrintColor() {
         txtDatum.setBackground(Color.WHITE);
