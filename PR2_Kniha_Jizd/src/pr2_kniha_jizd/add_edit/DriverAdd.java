@@ -2,12 +2,16 @@ package pr2_kniha_jizd.add_edit;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,6 +30,13 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
     private JTextField txtdatum = new JTextField();
     private int select;
     private boolean edit = false;
+    /// datum 
+    private JComboBox combYear;
+    private JComboBox combMonth;
+    private JComboBox combDey;
+    private GregorianCalendar calendarMy;
+    private Calendar kal = Calendar.getInstance();
+    /// datum end
 
     public DriverAdd() {
         print();
@@ -54,7 +65,49 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
         panel.add(new Label("příjmení :"));
         panel.add(txtPrijmeni);
         panel.add(new Label("datum :"));
-        panel.add(txtdatum);
+
+        //// combo boxy 
+        calendarMy = new GregorianCalendar();
+        int ridicak = 18;
+        Integer[] year = new Integer[(100 - ridicak)];
+        for (int x = ridicak; x < 100; x++) {
+            year[x - ridicak] = calendarMy.get(Calendar.YEAR) - x;
+        }
+        int maxDey = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+        Integer[] deys = new Integer[maxDey];
+        for (int x = 0; x < maxDey; x++) {
+            deys[x] = (x + 1);
+        }
+
+        JPanel datum = new JPanel(new FlowLayout());
+        combYear = new JComboBox(year);
+        combYear.addActionListener(this);
+        combYear.setPreferredSize(new Dimension(82, 28));
+        datum.add(combYear);
+
+        combMonth = new JComboBox(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+        combMonth.setSelectedItem((calendarMy.get(Calendar.MONTH)) + 1);
+        combMonth.addActionListener(this);
+        combMonth.setPreferredSize(new Dimension(66, 28));
+        datum.add(combMonth);
+
+        combDey = new JComboBox(deys);
+        combDey.setSelectedItem(calendarMy.get(Calendar.DATE));
+        combDey.addActionListener(this);
+        combDey.setPreferredSize(new Dimension(66, 28));
+        datum.add(combDey);
+        
+        if(edit){
+          combYear.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(0, 4)));
+          combMonth.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(5, 7)));
+          combDey.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(8, 10)));
+        }
+        
+
+        panel.add(datum);
+
+
+        /// comboboxy end
 
 
         JButton butt1 = new JButton("OK");
@@ -65,7 +118,7 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
         butt2.addActionListener(this);
         panel.add(butt2);
 
-        panel.setPreferredSize(new Dimension(215, 116));
+        panel.setPreferredSize(new Dimension(458, 116));
 
         this.add(panel);
 
@@ -78,53 +131,69 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getActionCommand().equals("Cancel")) {
-            this.setVisible(false);
-        }
-        if (ae.getActionCommand().equals("OK")) {
-            ArrayList<JTextField> aray = new ArrayList<JTextField>();
-            txtJmeno.setName("Jmeno");
-            txtPrijmeni.setName("příjmení");
-            txtdatum.setName("datum");
-            aray.add(txtJmeno);
-            aray.add(txtPrijmeni);
-            aray.add(txtdatum);
-
-            if (edit) {
-                try {
-                    new MyExceptionDetector(aray, select, MyExceptionDetector.DRIVER_EDIT);
-                    String prikaz = "UPDATE \"APP\".\"DRIVER\" "
-                            + "set JMENO='" + txtJmeno.getText() + "',"
-                            + "PRIJMENI='" + txtPrijmeni.getText() + "',"
-                            + "DATUM_NAROZENI={d '" + txtdatum.getText() + "'} "
-                            + "WHERE DRIVERID = " + select;
-                    new DbAccess(false, prikaz);
-                    this.setVisible(false);
-                } catch (MyException ex) {
-                    if (ex.isShow()) {
-                        JOptionPane.showMessageDialog(this, ex.getException());
-                    }
+        if (ae.getSource() instanceof JComboBox) {
+            JComboBox c = (JComboBox) ae.getSource();
+            if (c == combMonth) {
+                int x = (Integer) combYear.getSelectedItem();
+                int y = (Integer) combMonth.getSelectedItem() - 1;
+                int z = (Integer) combDey.getSelectedItem();
+                kal.set(x, y, z);
+                combDey.removeAllItems();
+                int maxDey = kal.getActualMaximum(kal.DAY_OF_MONTH);
+                for (int a = 0; a < maxDey; a++) {
+                    combDey.addItem((a + 1));
                 }
-            } else {
-                try {
-                    new MyExceptionDetector(aray, MyExceptionDetector.DRIVER_ADD);
-                    String prikaz = "INSERT INTO \"APP\".\"DRIVER\"(JMENO,PRIJMENI,DATUM_NAROZENI)"
-                            + "VALUES("
-                            + "'" + txtJmeno.getText() + "',"
-                            + "'" + txtPrijmeni.getText() + "',"
-                            + "{d '" + txtdatum.getText() + "'})";
+            }
+        } else {
 
-                    new DbAccess(false, prikaz);
-                    this.setVisible(false);
+            if (ae.getActionCommand().equals("Cancel")) {
+                this.setVisible(false);
+            }
+            if (ae.getActionCommand().equals("OK")) {
+                ArrayList<JTextField> aray = new ArrayList<JTextField>();
+                txtJmeno.setName("Jmeno");
+                txtPrijmeni.setName("příjmení");
+                txtdatum.setName("datum");
+                txtdatum.setText(combYear.getSelectedItem() + "-" + (((Integer) combMonth.getSelectedItem())) + "-" + combDey.getSelectedItem());
+                aray.add(txtJmeno);
+                aray.add(txtPrijmeni);
+                aray.add(txtdatum);
 
-                } catch (MyException ex) {
-                    if (ex.isShow()) {
-                        JOptionPane.showMessageDialog(this, ex.getException());
+                if (edit) {
+                    try {
+                        new MyExceptionDetector(aray, select, MyExceptionDetector.DRIVER_EDIT);
+                        String prikaz = "UPDATE \"APP\".\"DRIVER\" "
+                                + "set JMENO='" + txtJmeno.getText() + "',"
+                                + "PRIJMENI='" + txtPrijmeni.getText() + "',"
+                                + "DATUM_NAROZENI={d '" + txtdatum.getText() + "'} "
+                                + "WHERE DRIVERID = " + select;
+                        new DbAccess(false, prikaz);
+                        this.setVisible(false);
+                    } catch (MyException ex) {
+                        if (ex.isShow()) {
+                            JOptionPane.showMessageDialog(this, ex.getException());
+                        }
+                    }
+                } else {
+                    try {
+                        new MyExceptionDetector(aray, MyExceptionDetector.DRIVER_ADD);
+                        String prikaz = "INSERT INTO \"APP\".\"DRIVER\"(JMENO,PRIJMENI,DATUM_NAROZENI)"
+                                + "VALUES("
+                                + "'" + txtJmeno.getText() + "',"
+                                + "'" + txtPrijmeni.getText() + "',"
+                                + "{d '" + txtdatum.getText() + "'})";
+
+                        new DbAccess(false, prikaz);
+                        this.setVisible(false);
+
+                    } catch (MyException ex) {
+                        if (ex.isShow()) {
+                            JOptionPane.showMessageDialog(this, ex.getException());
+                        }
                     }
                 }
             }
         }
-
     }
 
     private void rePrintColor() {
