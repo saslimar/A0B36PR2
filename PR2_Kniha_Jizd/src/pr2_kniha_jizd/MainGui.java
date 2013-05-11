@@ -66,6 +66,7 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
 
         JButton search = new JButton("search");// nastavení tlačítek 
         search.addActionListener(this);// nastavení posluchače na tlačítko
+        btnSearchPanel.add(search); 
 
         JButton edit = new JButton("edit");
         edit.addActionListener(this);
@@ -210,17 +211,11 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
         // </editor-fold>
         // <editor-fold defaultstate="collapsed" desc="Detaily">
         if (ae.getActionCommand().equals("detaily")) {/// test opravyt
-            // int col = tabulka.getTable().getSelectedRow();
-            // if (col != -1) {
-            System.out.println(tabulka.getTable().getValueAt(1, 1));
-
-            //}
-            /*
             int col = tabulka.getTable().getSelectedRow();
             if (col != -1) {
             int sel = Integer.parseInt(tabulka.getTable().getValueAt(col, 0).toString());
             new Details(tabel_sel,sel).setVisible(true);// zobrazení detajlů k označenému řádku
-            }*/
+            }
 
 
         }
