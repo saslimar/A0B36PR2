@@ -67,6 +67,10 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
         JButton search = new JButton("search");// nastavení tlačítek 
         search.addActionListener(this);// nastavení posluchače na tlačítko
         btnSearchPanel.add(search); 
+        
+        JButton details = new JButton("detaily");
+        details.addActionListener(this);
+        btnSearchPanel.add(details);
 
         JButton edit = new JButton("edit");
         edit.addActionListener(this);
@@ -80,9 +84,7 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
         delete.addActionListener(this);
         btnSearchPanel.add(delete);
 
-        JButton details = new JButton("detaily");
-        details.addActionListener(this);
-        btnSearchPanel.add(details);
+    
 
         this.add(btnSearchPanel);
         // </editor-fold>
