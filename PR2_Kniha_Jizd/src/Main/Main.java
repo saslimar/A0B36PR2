@@ -1,6 +1,7 @@
 package Main;
 
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import pr2_kniha_jizd.add_edit.DriverAdd;
 import pr2_kniha_jizd.add_edit.CarAdd;
 import pr2_kniha_jizd.add_edit.RideAdd;
@@ -15,9 +16,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 import pr2_kniha_jizd.MainGui;
+import pr2_kniha_jizd.Statistika;
 import pr2_kniha_jizd.database.*;
 
 public class Main {
+//*
 
     static MainGui mainGui = new MainGui(); //inicializace hlavního okna programu
     static JMenuBar menu = new JMenuBar();                  //inicializace horního menu 
@@ -29,11 +32,14 @@ public class Main {
     static JMenuItem export = new JMenuItem("Export");
     static JMenuItem importD = new JMenuItem("Import");
     static JMenuItem exit = new JMenuItem("Exit (E)", 'E');
+    static JMenu Zobrazit = new JMenu("Zobrazit");
+    static JMenuItem statistika = new JMenuItem("Statistika (S)", 'S');
     static JMenu napoveda = new JMenu("Nápověda");
     static JMenuItem oProgramu = new JMenuItem("O programu (O)", 'O');
+//*/
 
     public static void main(String[] args) {
-
+        //*      
         try {
             Class.forName("org.apache.derby.jdbc.EmbeddedDriver"); //ošetření programu v případě že databéze programu nebyla nalezena
         } catch (java.lang.ClassNotFoundException e) {
@@ -56,7 +62,10 @@ public class Main {
 
         Soubor.add(add);
         menu.add(Soubor);
+        menu.add(Zobrazit);
         menu.add(napoveda);
+
+        Zobrazit.add(statistika);
 
         Soubor.add(export);
         Soubor.add(importD);
@@ -112,6 +121,15 @@ public class Main {
                         + "APP.CAR.CARID = app.RIDE.CARID"); // databázový příkaz pro jízdy (je složitejší jelikoš propojuje všechny 3 tabulky a ze zbylích 2 vipisuje jen požadované hodnoty)
             }
         });
+
+        statistika.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                new Statistika().setVisible(true);
+            }
+        });
+
         // </editor-fold>
 
 
@@ -126,6 +144,6 @@ public class Main {
         frame.setSize(600, 500);// nastavení velikosti
         frame.setJMenuBar(menu);
         frame.setVisible(true); // zobrazení
-
+        // */
     }
 }
