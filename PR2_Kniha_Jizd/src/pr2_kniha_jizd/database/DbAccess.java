@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class DbAccess {// dřída zajistující přístup k DB
 
@@ -27,7 +28,7 @@ public class DbAccess {// dřída zajistující přístup k DB
 
     public void DbRead(String prikaz) {// metoda pro čtení z databáze načte data podle příkazu a uloží do uložiště
         String url = "jdbc:derby:KJData";
-
+        boolean ukoncit = false;
         try {
             Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
         } catch (InstantiationException ex) {
@@ -60,6 +61,8 @@ public class DbAccess {// dřída zajistující přístup k DB
                 dataArray.add(data1);
             }
         } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Chyba v databázy. \nProgram bude ukončem.");
+            ukoncit =true;
         } finally {
 
             if (st != null) {
@@ -82,6 +85,9 @@ public class DbAccess {// dřída zajistující přístup k DB
                 } catch (SQLException ex) {
                     Logger.getLogger(DbAccess.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
+            if(ukoncit){
+                        System.exit(0);
             }
         }
         data = arrayToPole(dataArray);
