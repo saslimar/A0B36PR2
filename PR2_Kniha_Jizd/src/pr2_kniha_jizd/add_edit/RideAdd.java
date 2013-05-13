@@ -195,6 +195,7 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
 
     @Override
     public void actionPerformed(ActionEvent ae) {
+        boolean ok = true;
         if (ae.getSource() instanceof JComboBox) {
             JComboBox c = (JComboBox) ae.getSource();
             if (c == combMonth) {
@@ -232,13 +233,19 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
                 new MyExceptionDetector(aray, MyExceptionDetector.RIDE_ADD_EDIT);
                 Integer intVzdalenost = null;
                 if (!"".equals(txtVzdalenost.getText())) {
+                    try{
                     intVzdalenost = Integer.parseInt(txtVzdalenost.getText());
-                }
+                    }catch(NumberFormatException e){
+                        JOptionPane.showMessageDialog(null, "Vzdalenost muý být číslo");
+                        txtVzdalenost.setBackground(Color.RED);
+                        ok = false;
+                    }
+                    }
                 Integer intSpotreba = null;
                 if (!"".equals(txtSpotreba.getText())) {
                     intSpotreba = Integer.parseInt(txtSpotreba.getText());
                 }
-
+                if(ok){
                 String prikaz;
                 if (edit) {
                     prikaz = "UPDATE \"APP\".\"RIDE\"set DATUM_CESTY='" + txtDatum.getText() + "'"
@@ -263,14 +270,16 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
                             + "" + poleIdCar[txtCar.getSelectedIndex()] + ""
                             + ")";
                 }
-
+                
                 new DbAccess(false, prikaz);
                 this.setVisible(false);
+                }
             } catch (MyException ex) {
                 if (ex.isShow()) {
                     JOptionPane.showMessageDialog(this, ex.getException());
                 }
             }
+            
         }
         }
         }
