@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class DbAccess implements DbAccessInterface {// dřída zajistující přístup k DB
+
     private String[] colum;// uložiště pro data vytažené z databáze
     private String[][] data;//
     private String details = "";
@@ -43,7 +44,7 @@ public class DbAccess implements DbAccessInterface {// dřída zajistující př
         DbRead(s);
         String[] colum = this.getColum();
         String[][] datCar = this.getData();
-   //     System.out.println(colum.length);
+        //     System.out.println(colum.length);
         for (int x = 0; x < datCar.length; x++) {
             DbRead("SELECT COUNT(*) AS Rides FROM APP.RIDE WHERE CARID =" + datCar[x][2]);
             datCar[x][2] = (getData()[0][0] + " x");
@@ -57,7 +58,7 @@ public class DbAccess implements DbAccessInterface {// dřída zajistující př
         DbRead(s);
         String[] colum = this.getColum();
         String[][] datDriver = getData();
-      //  System.out.println(colum.length);
+        //  System.out.println(colum.length);
         for (int x = 0; x < datDriver.length; x++) {
             DbRead("SELECT COUNT(*) AS Rides FROM APP.RIDE WHERE DRIVERID =" + datDriver[x][2]);
             datDriver[x][2] = (getData()[0][0] + " x");
@@ -183,7 +184,7 @@ public class DbAccess implements DbAccessInterface {// dřída zajistující př
     }
 
     public void DbRead(String prikaz) {// metoda pro čtení z databáze načte data podle příkazu a uloží do uložiště
-   //     System.out.println(prikaz);
+        //     System.out.println(prikaz);
 
         String url = "jdbc:derby:KJData";
         boolean ukoncit = false;
@@ -220,7 +221,7 @@ public class DbAccess implements DbAccessInterface {// dřída zajistující př
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Chyba v databázy. \nProgram bude ukončem.");
-   //         System.out.println(prikaz);
+            //         System.out.println(prikaz);
             ukoncit = true;
         } finally {
 
@@ -263,58 +264,54 @@ public class DbAccess implements DbAccessInterface {// dřída zajistující př
 
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="DB WRITE">
-
     public void DbWriteDriverEdit(String jmeno, String prijmeni, String datum, int select) {
         String prikaz = "UPDATE \"APP\".\"DRIVER\" "
                 + "set JMENO='" + jmeno + "',"
                 + "PRIJMENI='" + prijmeni + "',"
                 + "DATUM_NAROZENI={d '" + datum + "'} "
                 + "WHERE DRIVERID = " + select;
+        DbWrite(prikaz);
     }
 
-    public void DbWriteDriverAdd(String jmeno, String prijmeni, String datum) {
-        String prikaz = "INSERT INTO \"APP\".\"DRIVER\"(JMENO,PRIJMENI,DATUM_NAROZENI)"
-                + "VALUES("
-                + "'" + jmeno + "',"
-                + "'" + prijmeni + "',"
-                + "{d '" + datum + "'})";
-    }
 
     public void DbWriteRideEdit(String datum, String odkud, String kam, String duvod,
             Integer vzdalenost, Integer spotreba, Integer driverId, Integer carId, int select) {
-            String prikaz = "UPDATE \"APP\".\"RIDE\"set DATUM_CESTY='" + datum+ "'"
-                            + ",ODKUD='" + odkud + "'"
-                            + ",kam='" + kam + "'"
-                            + ",DUVOD_CESTY='" + duvod+ "'"
-                            + ",VZDALENOST=" + vzdalenost + ""
-                            + ",SPOTREBA=" + spotreba + ""
-                            + ",DRIVERID=" + driverId + ""
-                            + ",CARID=" + carId + ""
-                            + " where RIDEID =" + select;
-            DbWrite(prikaz);
+        String prikaz = "UPDATE \"APP\".\"RIDE\"set DATUM_CESTY='" + datum + "'"
+                + ",ODKUD='" + odkud + "'"
+                + ",kam='" + kam + "'"
+                + ",DUVOD_CESTY='" + duvod + "'"
+                + ",VZDALENOST=" + vzdalenost + ""
+                + ",SPOTREBA=" + spotreba + ""
+                + ",DRIVERID=" + driverId + ""
+                + ",CARID=" + carId + ""
+                + " where RIDEID =" + select;
+        DbWrite(prikaz);
     }
 
     public void DbWriteRideAdd(String datum, String odkud, String kam, String duvod,
             Integer vzdalenost, Integer spotreba, Integer driverId, Integer carId) {
-         String prikaz = "INSERT INTO \"APP\".\"RIDE\""
-                            + "(DATUM_CESTY,ODKUD,KAM,DUVOD_CESTY,VZDALENOST,SPOTREBA,DRIVERID,CARID)"
-                            + "VALUES('" + datum + "',"
-                            + "'" + odkud + "',"
-                            + "'" + kam + "',"
-                            + "'" + duvod + "'"
-                            + "," + vzdalenost + ","
-                            + "" + spotreba + ","
-                            + "" + driverId + ","
-                            + "" + carId + ""
-                            + ")";
-         DbWrite(prikaz);
+        String prikaz = "INSERT INTO \"APP\".\"RIDE\""
+                + "(DATUM_CESTY,ODKUD,KAM,DUVOD_CESTY,VZDALENOST,SPOTREBA,DRIVERID,CARID)"
+                + "VALUES('" + datum + "',"
+                + "'" + odkud + "',"
+                + "'" + kam + "',"
+                + "'" + duvod + "'"
+                + "," + vzdalenost + ","
+                + "" + spotreba + ","
+                + "" + driverId + ","
+                + "" + carId + ""
+                + ")";
+        DbWrite(prikaz);
     }
+
     public void DbWriteCarAdd(String znacka, String spz, String druh, String firemni) {
         String prikaz = "INSERT INTO \"APP\".\"CAR\" (znacka,spz,druh,firemni)VALUES('"
                 + znacka
                 + "','" + spz + "',"
                 + druh + ","
                 + "'" + firemni + "')";
+        DbWrite(prikaz);
+
     }
 
     public void DbWriteCarEdit(String znacka, String spz, String druh, String firemni, int select) {
@@ -466,4 +463,16 @@ public class DbAccess implements DbAccessInterface {// dřída zajistující př
     }
     // </editor-fold>
 
+    public void DbWriteDriverAdd(String jmeno, String prijmeni, String datum) {
+        String prikaz = "INSERT INTO \"APP\".\"DRIVER\"(JMENO,PRIJMENI,DATUM_NAROZENI)"
+                + "VALUES("
+                + "'" + jmeno + "',"
+                + "'" + prijmeni + "',"
+                + "{d '" + datum + "'})";
+        DbWrite(prikaz);
+    }
+
+    public void DbWriteD() {
+        System.out.println(" neco");
+    }
 }
