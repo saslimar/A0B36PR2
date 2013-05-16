@@ -112,6 +112,7 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
             } else {
                 try {
                     new MyExceptionDetector(aray, MyExceptionDetector.CAR_ADD);
+                    k = new DbAccess();
                     k.DbWriteCarAdd(txtZnacka.getText(),txtSpz.getText(),typtext,(firemni.isSelected() ? "ano" : "ne"));
                     this.setVisible(false);
 

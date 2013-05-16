@@ -247,7 +247,6 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
                         intSpotreba = Integer.parseInt(txtSpotreba.getText());
                     }
                     if (ok) {
-                        String prikaz;
                         if (edit) {
 
                             k.DbWriteRideEdit(txtDatum.getText(), txtOdkud.getText(), txtKam.getText(), txtDuvod.getText(), intVzdalenost, intSpotreba, poleIdDriver[txtDriver.getSelectedIndex()], poleIdCar[txtCar.getSelectedIndex()], select);

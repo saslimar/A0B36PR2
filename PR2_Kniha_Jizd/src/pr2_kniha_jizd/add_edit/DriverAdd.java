@@ -177,14 +177,15 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
                     try {
                         new MyExceptionDetector(aray, MyExceptionDetector.DRIVER_ADD);
 
-                        k.DbWriteDriverAdd(txtJmeno.getText(), txtPrijmeni.getText(), txtdatum.getText());
+                    k = new DbAccess();
+                    k.DbWriteDriverAdd(txtJmeno.getText(), txtPrijmeni.getText(), txtdatum.getText());
                         //  new DbAccess(false, prikaz);
                         this.setVisible(false);
 
                     } catch (MyException ex) {
                         if (ex.isShow()) {
                             JOptionPane.showMessageDialog(this, ex.getException());
-                        }
+                                    }
                     }
                 }
             }
