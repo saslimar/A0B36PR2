@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JTextField;
 import pr2_kniha_jizd.database.DbAccess;
 
-public class MyExceptionDetector {// třída kontrolující chiby
+    public class MyExceptionDetector {// třída kontrolující chiby
 
     public static final int CAR_ADD = 1;
     public static final int CAR_EDIT = 2;
