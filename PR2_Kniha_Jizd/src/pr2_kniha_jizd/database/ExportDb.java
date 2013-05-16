@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import pr2_kniha_jizd.Browse;
 
-public class ExportDb {// třída obstarávající exportování databáze do souboru pro pozdější import
-
+public class ExportDb extends DbAccess{// třída obstarávající exportování databáze do souboru pro pozdější import
+ private DbAccess db= new DbAccess();
     public ExportDb() {// tato třída má prázdnáýý konstruktor veškerou funkci si obstarává sama
         String cesta = new Browse().saveDialog();// načte si cestu pro uložení souboru
         String select = "DRIVER";
@@ -35,7 +35,7 @@ public class ExportDb {// třída obstarávající exportování databáze do so
 
     private String getString(String select)// metoda vrací data v příslušném formátu ze zadané tabulky 
     {
-        DbAccess db = new DbAccess(true, "select * from APP." + select);// vytažení dat z databáze
+        db.DbRead("select * from APP." + select);// vytažení dat z databáze
         String[] colum = db.getColum();
         String[][] data = db.getData();
         String add = "INSERT INTO \"APP\".\"" + select + "\"(";
@@ -63,9 +63,9 @@ public class ExportDb {// třída obstarávající exportování databáze do so
 
                     }
                     int id = Integer.parseInt(data_[x]);
-                    DbAccess db_ = new DbAccess(true, kod + id);
-                    String[] columX = db_.getColum();
-                    String[] dataX = db_.getData()[0];
+                    db.DbRead(kod + id);
+                    String[] columX = db.getColum();
+                    String[] dataX = db.getData()[0];
                     for (int c = 1; c < columX.length; c++) {
                         if (dataX[c] != null) {
                             idString += columX[c] + " = '" + dataX[c] + "'";

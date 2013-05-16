@@ -8,7 +8,7 @@ import javax.swing.JOptionPane;
 import pr2_kniha_jizd.Browse;
 
 public class ImportDb {
-
+ DbAccess db = new DbAccess();
     public ImportDb() {// třída dosti podobná export db 
         String cesta = new Browse().loadDialog();// načte si cestu k souboru
         if (cesta == null || cesta.equals("")) {// skontroluje jí
@@ -59,12 +59,13 @@ public class ImportDb {
                     }
                 }
             }
-            if (new DbAccess(true, is).getData() == null) {
-                new DbAccess(false, data);
+            db.DbRead(is);
+            if (db.getData() == null) {
+                db.DbWrite(data); 
             } else {
             }
         } else if (data.indexOf("\"APP\".\"RIDE\"") != -1) {
-            new DbAccess(false, data);
+                            db.DbWrite(data); 
         } else {
         }
     }
