@@ -11,11 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-public class DbAccess {// dřída zajistující přístup k DB
-
-    public static final int CAR = 1;
-    public static final int DRIVER = 2;
-    public static final int RIDE = 3;
+public class DbAccess implements DbAccessInterface {// dřída zajistující přístup k DB
     private String[] colum;// uložiště pro data vytažené z databáze
     private String[][] data;//
     private String details = "";
