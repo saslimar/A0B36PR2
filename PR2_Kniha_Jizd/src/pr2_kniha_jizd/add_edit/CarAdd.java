@@ -27,15 +27,16 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
     private JCheckBox firemni = new JCheckBox();
     private int select;
     private boolean edit = false;
-
+    private DbAccess k;
     public CarAdd() {// prázdný konstruktor volám pokud chci vytvořit prázdné okno pro přidání záznamu
         print();
     }
 
-    public CarAdd(String prikaz, int select) {// kontruktor pro upravu záznamu příkaz je databázový příkaz a select je databazove ID
+    public CarAdd(int prikaz, int select) {// kontruktor pro upravu záznamu příkaz je databázový příkaz a select je databazove ID
         this.select = select;
         edit = true;
-        DbAccess k = new DbAccess(true, prikaz);// vytahnu data z databáze
+        k = new DbAccess();// vytahnu data z databáze
+        k.DbRead(prikaz,select);
         String[][] data = k.getData();
         txtZnacka.setText(data[0][1]);// a naplním jimy požadovaná políčka
         txtSpz.setText(data[0][2]);
@@ -100,13 +101,8 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
             if (edit) {
                 try {
                     new MyExceptionDetector(aray, select, MyExceptionDetector.CAR_EDIT);
-                    String prikaz = "UPDATE \"APP\".\"CAR\" "
-                            + "set ZNACKA='" + txtZnacka.getText() + "',"
-                            + "SPZ='" + txtSpz.getText() + "',"
-                            + "DRUH=" + typtext + " "
-                            + ",firemni = '" + (firemni.isSelected() ? "ano" : "ne") + "'"
-                            + "WHERE CARID =" + select;
-                    new DbAccess(false, prikaz);
+                  //       new DbAccess(false, prikaz);
+                    k.DbWriteCarEdit(txtZnacka.getText(),txtSpz.getText(),typtext,(firemni.isSelected() ? "ano" : "ne"),select);
                     this.setVisible(false);
                 } catch (MyException ex) {
                     if (ex.isShow()) {
@@ -116,13 +112,7 @@ public class CarAdd extends JDialog implements ActionListener, DocumentListener 
             } else {
                 try {
                     new MyExceptionDetector(aray, MyExceptionDetector.CAR_ADD);
-                    String prikaz = "INSERT INTO \"APP\".\"CAR\" (znacka,spz,druh,firemni)VALUES('"
-                            + txtZnacka.getText()
-                            + "','" + txtSpz.getText() + "',"
-                            + typtext + ","
-                            + "'" + (firemni.isSelected() ? "ano" : "ne") + "')";
-
-                    new DbAccess(false, prikaz);
+                    k.DbWriteCarAdd(txtZnacka.getText(),txtSpz.getText(),typtext,(firemni.isSelected() ? "ano" : "ne"));
                     this.setVisible(false);
 
 

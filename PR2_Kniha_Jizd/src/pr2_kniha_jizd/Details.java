@@ -28,19 +28,25 @@ public class Details extends JDialog implements ActionListener, DocumentListener
     String[] colum;
     String[][] data;
 
-    public Details(String tab_sel, Integer id) {// konstruktor příjmá data o kterou tabulku se jedná a jake je id zaznamu 
-        print(tab_sel, id);
+    public Details(int tab_sel, Integer id) {// konstruktor příjmá data o kterou tabulku se jedná a jake je id zaznamu 
+        DbAccess db = new DbAccess();
+        db.DbReadDetails(tab_sel, id);
+        print(db.getDetails());
         text.getDocument().addDocumentListener(this);
     }
 
-    private void print(String tab_sel, Integer id) {// metoda načte data z databáze a zobrazý je 
+    private void print(String detailText) {// metoda načte data z databáze a zobrazý je 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        String prikaz = "select * from APP." + tab_sel + " where " + tab_sel + "ID = " + id;
+        
+//        String prikaz = "select * from APP." + tab_sel + " where " + tab_sel + "ID = " + id;
         JPanel dataPanel = new JPanel();
-        DbAccess db = new DbAccess(true, prikaz);// volání databáze z daným příkazem
-        colum = db.getColum();// vrací hodnoty z databáze
-        data = db.getData();// vrací hodnoty z databáze
+  
+//        DbAccess db = new DbAccess(true, prikaz);// volání databáze z daným příkazem
+        
+//        colum = db.getColum();// vrací hodnoty z databáze
+//        data = db.getData();// vrací hodnoty z databáze
 
+  /*
         if ("RIDE".equals(tab_sel)) {// sežazení výpisu podle typu zobrazovaných dat
             printRide(id);
             printDriver(Integer.parseInt(data[0][data[0].length - 2]));
@@ -67,9 +73,11 @@ public class Details extends JDialog implements ActionListener, DocumentListener
             }
 
         }
+        */
         JScrollPane k = new JScrollPane(text);
         k.createVerticalScrollBar();
         k.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        text.setText(detailText);
         dataPanel.add(k);
 
         panel.add(dataPanel);
@@ -92,55 +100,6 @@ public class Details extends JDialog implements ActionListener, DocumentListener
         setLocationRelativeTo(getRootPane());
 
     }
-
-    private void printDriver(Integer id) {// vipíše data o řidičovy s ID
-        DbAccess db = new DbAccess(true, "select * from APP.DRIVER where DRIVERID =" + id);
-        String[] colum = db.getColum();
-        String[][] data = db.getData();
-        text.setText(text.getText() + "ŘIDIČ\n_________________\n");
-        for (int x = 1; x < 4; x++) {
-            String data_ = data[0][x];
-            if (data[0][x] == null) {
-                data_ = "nevedeno";
-            }
-            text.setText(text.getText() + colum[x] + " : " + data_ + "\n");
-        }
-        text.setText(text.getText() + "\n");
-
-    }
-
-    private void printCar(Integer id) {// vipíše data o autě s ID
-        DbAccess db = new DbAccess(true, "select * from APP.CAR where CARID =" + id);
-        String[] colum = db.getColum();
-        String[][] data = db.getData();
-        text.setText(text.getText() + "AUTO\n_________________\n");
-        for (int x = 1; x < 5; x++) {
-            String data_ = data[0][x];
-            if (data[0][x] == null) {
-                data_ = "nevedeno";
-            }
-            text.setText(text.getText() + colum[x] + " : " + data_ + "\n");
-        }
-        text.setText(text.getText() + "\n");
-
-    }
-
-    private void printRide(Integer id) {// vipíše data o jízdě s ID
-        DbAccess db = new DbAccess(true, "select * from APP.ride where RIDEID =" + id);
-        String[] colum = db.getColum();
-        String[][] data = db.getData();
-        text.setText(text.getText() + "Jízda\n_________________\n");
-        for (int x = 1; x < 6; x++) {
-            String data_ = data[0][x];
-            if (data[0][x] == null) {
-                data_ = "nevedeno";
-            }
-            text.setText(text.getText() + colum[x] + " : " + data_ + "\n");
-        }
-        text.setText(text.getText() + "\n");
-
-    }
-
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getActionCommand().equals("Cancel")) {// zmačnuli cancel tabulka nám zmizý

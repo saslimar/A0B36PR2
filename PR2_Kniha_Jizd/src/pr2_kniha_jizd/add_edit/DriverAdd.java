@@ -37,15 +37,17 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
     private GregorianCalendar calendarMy;
     private Calendar kal = Calendar.getInstance();
     /// datum end
+    DbAccess k;
 
     public DriverAdd() {
         print();
     }
 
-    public DriverAdd(String prikaz, int select) {
+    public DriverAdd(int prikaz, int select) {
         this.select = select;
         edit = true;
-        DbAccess k = new DbAccess(true, prikaz);
+        k = new DbAccess();
+        k.DbRead(prikaz, select);
         String[][] data = k.getData();
         txtJmeno.setText(data[0][1]);
         txtPrijmeni.setText(data[0][2]);
@@ -96,13 +98,13 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
         combDey.addActionListener(this);
         combDey.setPreferredSize(new Dimension(66, 28));
         datum.add(combDey);
-        
-        if(edit){
-          combYear.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(0, 4)));
-          combMonth.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(5, 7)));
-          combDey.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(8, 10)));
+
+        if (edit) {
+            combYear.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(0, 4)));
+            combMonth.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(5, 7)));
+            combDey.setSelectedItem(Integer.parseInt(txtdatum.getText().substring(8, 10)));
         }
-        
+
 
         panel.add(datum);
 
@@ -162,12 +164,9 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
                 if (edit) {
                     try {
                         new MyExceptionDetector(aray, select, MyExceptionDetector.DRIVER_EDIT);
-                        String prikaz = "UPDATE \"APP\".\"DRIVER\" "
-                                + "set JMENO='" + txtJmeno.getText() + "',"
-                                + "PRIJMENI='" + txtPrijmeni.getText() + "',"
-                                + "DATUM_NAROZENI={d '" + txtdatum.getText() + "'} "
-                                + "WHERE DRIVERID = " + select;
-                        new DbAccess(false, prikaz);
+
+                        k.DbWriteDriverEdit(txtJmeno.getText(), txtPrijmeni.getText(), txtdatum.getText(), select);
+                        //new DbAccess(false, prikaz);
                         this.setVisible(false);
                     } catch (MyException ex) {
                         if (ex.isShow()) {
@@ -177,13 +176,9 @@ public class DriverAdd extends JDialog implements ActionListener, DocumentListen
                 } else {
                     try {
                         new MyExceptionDetector(aray, MyExceptionDetector.DRIVER_ADD);
-                        String prikaz = "INSERT INTO \"APP\".\"DRIVER\"(JMENO,PRIJMENI,DATUM_NAROZENI)"
-                                + "VALUES("
-                                + "'" + txtJmeno.getText() + "',"
-                                + "'" + txtPrijmeni.getText() + "',"
-                                + "{d '" + txtdatum.getText() + "'})";
 
-                        new DbAccess(false, prikaz);
+                        k.DbWriteDriverAdd(txtJmeno.getText(), txtPrijmeni.getText(), txtdatum.getText());
+                        //  new DbAccess(false, prikaz);
                         this.setVisible(false);
 
                     } catch (MyException ex) {

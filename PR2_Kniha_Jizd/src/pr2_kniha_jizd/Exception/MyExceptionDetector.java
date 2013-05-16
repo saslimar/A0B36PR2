@@ -15,7 +15,7 @@ public class MyExceptionDetector {// třída kontrolující chiby
     public static final int DRIVER_EDIT = 4;
     public static final int RIDE_ADD_EDIT = 5; // konstanty určující o jakou kontrolu jde
     private int select;
-
+    DbAccess k = new DbAccess();
     public MyExceptionDetector() throws MyException {// konstruktory
         throw (new MyException());
     }
@@ -66,7 +66,8 @@ public class MyExceptionDetector {// třída kontrolující chiby
             if (ex.isException()) {
                 throw ex;
             }
-            String[][] data = new DbAccess(true, "select * from APP.DRIVER WHERE JMENO='" + text.get(0).getText() + "' and PRIJMENI='" + text.get(1).getText() + "' and DATUM_NAROZENI ='" + text.get(2).getText() + "'").getData();
+            k.DbReadException(text.get(0).getText(), text.get(1).getText(), text.get(2).getText());
+            String[][] data = k.getData();
             if (data != null) {
                 if (exceptionconstants == DRIVER_EDIT) {
                     if (Integer.parseInt(data[0][0]) != select) {
@@ -97,7 +98,8 @@ public class MyExceptionDetector {// třída kontrolující chiby
             if (ex.isException()) {
                 throw ex;
             }
-            String[][] data = new DbAccess(true, "SELECT SPZ,CarID FROM app.CAR").getData();
+            k.DbReadException(null, null, null);
+            String[][] data = k.getData();
             if (data != null) {
                 for (int x = 0; x < data.length; x++) {
                     if (data[x][0].equals(text.get(0).getText())) {

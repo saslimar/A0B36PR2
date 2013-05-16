@@ -33,7 +33,9 @@ public class Main {
     static JMenuItem importD = new JMenuItem("Import");
     static JMenuItem exit = new JMenuItem("Exit (E)", 'E');
     static JMenu Zobrazit = new JMenu("Zobrazit");
-    static JMenuItem statistika = new JMenuItem("Statistika (S)", 'S');
+    static JMenuItem statistikaCar = new JMenuItem("Statistika Aut (A)", 'A');
+    static JMenuItem statistikaDrivers = new JMenuItem("Statistika Lidí (S)", 'S');
+    
     static JMenu napoveda = new JMenu("Nápověda");
     static JMenuItem oProgramu = new JMenuItem("O programu (O)", 'O');
 //*/
@@ -65,8 +67,8 @@ public class Main {
         menu.add(Zobrazit);
         menu.add(napoveda);
 
-        Zobrazit.add(statistika);
-
+        Zobrazit.add(statistikaCar);
+        Zobrazit.add(statistikaDrivers);
         Soubor.add(export);
         Soubor.add(importD);
         Soubor.add(exit);
@@ -101,32 +103,37 @@ public class Main {
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 new CarAdd().setVisible(true);
-                mainGui.print_tabel("select * from APP.CAR");
+                mainGui.print_tabel(DbAccess.CAR);
             }
         });
         driver.addActionListener(new java.awt.event.ActionListener() {// přepnutí zobrazených dat na řidiče
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 new DriverAdd().setVisible(true);
-                mainGui.print_tabel("select * from APP.DRIVER");
+                mainGui.print_tabel(DbAccess.DRIVER);
             }
         });
         ride.addActionListener(new java.awt.event.ActionListener() {// přepnutí zobrazených dat na jízdy
 
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 new RideAdd().setVisible(true);
-                mainGui.print_tabel("SELECT RIDEID,DATUM_CESTY,ODKUD,KAM,DUVOD_CESTY,VZDALENOST,SPOTREBA ,"
-                        + "PRIJMENI||'.'||substr(JMENO, 1, 1) AS DRIVER, SPZ AS AUTO FROM APP.RIDE JOIN"
-                        + " APP.DRIVER ON APP.DRIVER.DRIVERID = APP.RIDE.DRIVERID join APP.CAR on "
-                        + "APP.CAR.CARID = app.RIDE.CARID"); // databázový příkaz pro jízdy (je složitejší jelikoš propojuje všechny 3 tabulky a ze zbylích 2 vipisuje jen požadované hodnoty)
+                mainGui.print_tabel(DbAccess.RIDE); // databázový příkaz pro jízdy (je složitejší jelikoš propojuje všechny 3 tabulky a ze zbylích 2 vipisuje jen požadované hodnoty)
             }
         });
 
-        statistika.addActionListener(new java.awt.event.ActionListener() {
+        statistikaCar.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent ae) {
-                new Statistika().setVisible(true);
+                new Statistika(false).setVisible(true);
+            }
+        });
+        
+        statistikaDrivers.addActionListener(new java.awt.event.ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                new Statistika(true).setVisible(true);
             }
         });
 

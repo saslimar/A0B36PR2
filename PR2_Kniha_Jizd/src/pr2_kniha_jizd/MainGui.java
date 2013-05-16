@@ -21,10 +21,6 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
     private TabelPanel tabulka;
     private TextField text = new TextField(12);
     private String tabel_sel = "RIDE";
-    private String code = "SELECT RIDEID,DATUM_CESTY,ODKUD,KAM,DUVOD_CESTY,VZDALENOST,SPOTREBA ,"
-            + "PRIJMENI||'.'||substr(JMENO, 1, 1) AS DRIVER, SPZ AS AUTO FROM APP.RIDE JOIN"
-            + " APP.DRIVER ON APP.DRIVER.DRIVERID = APP.RIDE.DRIVERID join APP.CAR on "
-            + "APP.CAR.CARID = app.RIDE.CARID"; // databazový kod pro zobrazení jízdy
     private JPanel cards;
     private String jizdy = "jízdy";
     private String auta = "auta";
@@ -56,7 +52,7 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
         selectPanel.add(btn_lide);
 
         this.add(selectPanel);
-        tabulka = new TabelPanel(code); // vytvoření tabulky vstupní promnená je DB příkaz který řiká co se zobrazý
+        tabulka = new TabelPanel(DbAccess.RIDE); // vytvoření tabulky vstupní promnená je DB příkaz který řiká co se zobrazý
         this.add(tabulka);
 
         JPanel btnSearchPanel = new JPanel(new FlowLayout());// panel tlačítek
@@ -66,8 +62,8 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
 
         JButton search = new JButton("search");// nastavení tlačítek 
         search.addActionListener(this);// nastavení posluchače na tlačítko
-        btnSearchPanel.add(search); 
-        
+        btnSearchPanel.add(search);
+
         JButton details = new JButton("detaily");
         details.addActionListener(this);
         btnSearchPanel.add(details);
@@ -84,7 +80,7 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
         delete.addActionListener(this);
         btnSearchPanel.add(delete);
 
-    
+
 
         this.add(btnSearchPanel);
         // </editor-fold>
@@ -95,16 +91,23 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
     public void print_tabel_import()// metoda pro zobrazení novje importované databáze v tabulce
     {
         if ("RIDE".equals(tabel_sel)) {
-            print_tabel(code);
+            print_tabel(DbAccess.RIDE);
+        } else if ("CAR".equals(tabel_sel)) {
+            print_tabel(DbAccess.CAR);
         } else {
-            print_tabel("select * from APP." + tabel_sel);
+            print_tabel(DbAccess.DRIVER);
         }
         this.validate();
     }
 
-    public void print_tabel(String list) {// metoda pro zobrazení dat v tabulce podle zadaneho databazoveho příkazu
+    public void print_tabel(int i) {// metoda pro zobrazení dat v tabulce podle zadaneho databazoveho příkazu
         this.remove(tabulka);
-        tabulka = new TabelPanel(list);
+        tabulka = new TabelPanel(i);
+        this.add(tabulka, 1);
+    }
+    public void print_tabel(int i,String search) {// metoda pro zobrazení dat v tabulce podle zadaneho databazoveho příkazu
+        this.remove(tabulka);
+        tabulka = new TabelPanel(i,search);
         this.add(tabulka, 1);
     }
     // </editor-fold>
@@ -114,30 +117,30 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
         // <editor-fold defaultstate="collapsed" desc="přepínání tabulek">        
         if (ae.getActionCommand().equals(auta)) {
             tabel_sel = "CAR";
-            print_tabel("select * from APP." + tabel_sel);// zmnena dat v tabulce
+            print_tabel(DbAccess.CAR);// zmnena dat v tabulce
         }
         if (ae.getActionCommand().equals(lide)) {
             tabel_sel = "DRIVER";
-            print_tabel("select * from APP." + tabel_sel);// zmnena dat v tabulce
+            print_tabel(DbAccess.DRIVER);// zmnena dat v tabulce
         }
         if (ae.getActionCommand().equals(jizdy)) {
             tabel_sel = "RIDE";
-            print_tabel(code);// zmnena dat v tabulce
+            print_tabel(DbAccess.RIDE);// zmnena dat v tabulce
         }
         // </editor-fold>     
         // <editor-fold defaultstate="collapsed" desc="ADD">        
         if (ae.getActionCommand().equals("add")) {
             if ("DRIVER".equals(tabel_sel)) {
                 new DriverAdd().setVisible(true);// zobrazení UI pro zadání nových dat 
+                print_tabel(DbAccess.DRIVER);
             }
             if ("CAR".equals(tabel_sel)) {
                 new CarAdd().setVisible(true);// zobrazení UI pro zadání nových dat 
+                print_tabel(DbAccess.CAR);
             }
             if ("RIDE".equals(tabel_sel)) {
                 new RideAdd().setVisible(true);// zobrazení UI pro zadání nových dat 
-                print_tabel(code);
-            } else {
-                print_tabel("select * from APP." + tabel_sel);
+                print_tabel(DbAccess.RIDE);
             }
         }
         // </editor-fold>
@@ -147,17 +150,16 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
             if (col != -1) { // kontrola zda řádek je opravdu vybrán
                 int sel = Integer.parseInt(tabulka.getTable().getValueAt(col, 0).toString());
                 if ("DRIVER".equals(tabel_sel)) {
-                    new DriverAdd("SELECT * FROM APP.DRIVER WHERE DRIVERID = " + sel, sel).setVisible(true);// zobrazení dialogoveho okna pro přidání noveho zaznamu s naplněním vybranýmy daty
+                    new DriverAdd(getConstant(tabel_sel), sel).setVisible(true);// zobrazení dialogoveho okna pro přidání noveho zaznamu s naplněním vybranýmy daty
                 }
                 if ("CAR".equals(tabel_sel)) {
-                    new CarAdd("SELECT * FROM APP.CAR WHERE CARID = " + sel, sel).setVisible(true);
+                    new CarAdd(getConstant(tabel_sel), sel).setVisible(true);
                 }
                 if ("RIDE".equals(tabel_sel)) {
-                    new RideAdd("SELECT * FROM APP.RIDE WHERE RIDEID = " + sel, sel).setVisible(true);
-                    print_tabel(code);
-                } else {
-                    print_tabel("select * from APP." + tabel_sel);
+                    new RideAdd(getConstant(tabel_sel), sel).setVisible(true);
                 }
+                    print_tabel(getConstant(tabel_sel));
+                
             }
         }
         // </editor-fold>
@@ -168,7 +170,7 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
                 int sel = Integer.parseInt(tabulka.getTable().getValueAt(col, 0).toString());// zýskání databazoveho čísla zaznamu
                 if ("RIDE".equals(tabel_sel)) { // jeli vybrána jízda
                     delete(sel);// metoda ktera smaže záznam 
-                    print_tabel(code);// zobrazeni dat
+                    print_tabel(DbAccess.RIDE);// zobrazeni dat
                     if (tabulka.getTable().getRowCount() > 0) {// POKUD SOU V TABULCE DALŠÍ DATA    
                         if (col == 0) {// pokud sem smazal nulový zaznam tedy zaznam na prvnim mýste v tabulce
                             col++;  //řeknu že nulový nebyl
@@ -177,14 +179,14 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
                     }// jinak se označí prostě jen záznam předhozý od smazaného záznamu
                 } else {// pokud je však vybrán řidič či auto
                     // musýme s ním smazat i souvysející záznamy 
-                    DB.DbRead("SELECT * FROM app.RIDE WHERE " + tabel_sel + "ID =" + sel);
+                    DB.DbReadForDelete(getConstant(tabel_sel), sel);
                     boolean isUse = ((DB.getData() != null));
                     if (isUse) {// souvidíli s jízdou 
                         switch (JOptionPane.showConfirmDialog(this, "Po smazaní budou odstaněny i všechny související jízdy \n Pokračovat?", "varování", JOptionPane.WARNING_MESSAGE)) {// zeptam se uživatele zda smazat i související
                             case JOptionPane.OK_OPTION:// pokud ano mažu 
                                 delete(sel);
-                                DB.DbWrite("DELETE FROM app.RIDE WHERE " + tabel_sel + "ID =" + sel);
-                                print_tabel("select * from APP." + tabel_sel);
+                                DB.DbWriteDeleteRide(getConstant(tabel_sel),sel);
+                                print_tabel(getConstant(tabel_sel));
                                 if (tabulka.getTable().getRowCount() > 0) {
                                     if (col == 0) {
                                         col++;
@@ -198,7 +200,7 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
                         }
                     } else {//nesouvisí li s žádnou jízdou 
                         delete(sel);// normálně smažu
-                        print_tabel("select * from APP." + tabel_sel);
+                        print_tabel(getConstant(tabel_sel));
                         if (tabulka.getTable().getRowCount() > 0) {
                             if (col == 0) {
                                 col++;
@@ -215,8 +217,8 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
         if (ae.getActionCommand().equals("detaily")) {/// test opravyt
             int col = tabulka.getTable().getSelectedRow();
             if (col != -1) {
-            int sel = Integer.parseInt(tabulka.getTable().getValueAt(col, 0).toString());
-            new Details(tabel_sel,sel).setVisible(true);// zobrazení detajlů k označenému řádku
+                int sel = Integer.parseInt(tabulka.getTable().getValueAt(col, 0).toString());
+                new Details(getConstant(tabel_sel), sel).setVisible(true);// zobrazení detajlů k označenému řádku
             }
 
 
@@ -226,51 +228,30 @@ public class MainGui extends JPanel implements ActionListener { // hlavní tří
         if (ae.getActionCommand().equals("search")) { //vyhledávání 
             // <editor-fold defaultstate="collapsed" desc="SEARCH">
 
-            if ("RIDE".equals(tabel_sel)) {
-                String dotazRide = "select RIDEID,DATUM_CESTY,ODKUD,KAM,DUVOD_CESTY,VZDALENOST,SPOTREBA ,"
-                        + "PRIJMENI||'.'||substr(JMENO, 1, 1) AS DRIVER, SPZ AS AUTO FROM APP.RIDE JOIN"
-                        + " APP.DRIVER ON APP.DRIVER.DRIVERID = APP.RIDE.DRIVERID join APP.CAR on "
-                        + "APP.CAR.CARID = app.RIDE.CARID WHERE "
-                        + "upper(ODKUD) like upper('%" + text.getText() + "%') or "
-                        + "upper(KAM) like upper('%" + text.getText() + "%') or "
-                        + "upper(DUVOD_CESTY) like upper('%" + text.getText() + "%') or "
-                        + "upper(PRIJMENI||'.'||substr(JMENO, 1, 1)) like upper('%" + text.getText() + "%') or "
-                        + "upper(SPZ) like upper('%" + text.getText() + "%')";// ošklivé db příkazy uspusobene k vihledávání 
-
-                boolean addInt = false;
-                try {
-                    Integer test = Integer.parseInt(text.getText());
-                    addInt = true;
-                } catch (NumberFormatException e) {
-                }
-                if (addInt) {
-                    dotazRide += "or VZDALENOST = " + text.getText() + " or "
-                            + "SPOTREBA = " + text.getText();
-                }
-                print_tabel(dotazRide);// zobrazení nalezených záznamu
-            }
-            if ("CAR".equals(tabel_sel)) {
-                String dotazCar = "select * from APP.CAR WHERE "
-                        + "upper(ZNACKA) like upper('%" + text.getText() + "%') or "
-                        + "upper(SPZ) like upper('%" + text.getText() + "%') or "
-                        + "upper(DRUH) like upper('%" + text.getText() + "%')";// ošklivé db příkazy uspusobene k vihledávání 
-                print_tabel(dotazCar);// zobrazení nalezených záznamu
-            }
-            if ("DRIVER".equals(tabel_sel)) {
-                String dotazDriver = "select * from APP.DRIVER WHERE "
-                        + "upper(JMENO) like upper('%" + text.getText() + "%') or "
-                        + "upper(PRIJMENI) like upper('%" + text.getText() + "%') or "
-                        + "upper(DATUM_NAROZENI) like upper('%" + text.getText() + "%')";// ošklivé db příkazy uspusobene k vihledávání 
-                print_tabel(dotazDriver);// zobrazení nalezených záznamu
-            }
+                
+                print_tabel(getConstant(tabel_sel),text.getText());// zobrazení nalezených záznamu
             //</editor-fold>
         }
         eventRepack(ae);// po jakekoli akco je potřeba "překreslit" GUI
     }
 
+    private int getConstant(String s) {
+        if ("DRIVER".equals(tabel_sel)) {
+            return (DbAccess.DRIVER);
+        }
+        if ("CAR".equals(tabel_sel)) {
+            return (DbAccess.CAR);
+
+        }
+        if ("RIDE".equals(tabel_sel)) {
+            return (DbAccess.RIDE);
+        }
+
+        return 0;
+    }
+
     private void delete(int sel) {// metoda mazající záznam z momentálně vybrané tabulky a ID
-        String prikaz = "DELETE FROM app." + tabel_sel + "  WHERE " + tabel_sel + "ID=";
-        DB.DbWrite(prikaz + sel);
+        DB.DbWriteDelete(getConstant(tabel_sel), sel);
     }
 
     private void eventRepack(ActionEvent e) {// metoda pro překreslení gui

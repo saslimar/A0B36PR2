@@ -46,16 +46,17 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
     private GregorianCalendar calendarMy;
     private Calendar kal = Calendar.getInstance();
     /// datum end
-    public RideAdd(String prikaz, int select) {
+    DbAccess k = new DbAccess();
+
+    public RideAdd(int prikaz, int select) {
         this.select = select;
         edit = true;
-        DbAccess k = new DbAccess(true, prikaz);
+        k.DbRead(prikaz, select);
         String[][] data = k.getData();
         txtDatum.setText(data[0][1]);
         txtOdkud.setText(data[0][2]);
         txtKam.setText(data[0][3]);
         txtDuvod.setText(data[0][4]);
-
         txtVzdalenost.setText(data[0][5]);
         txtSpotreba.setText(data[0][6]);
 
@@ -83,7 +84,7 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
         calendarMy = new GregorianCalendar();
         Integer[] year = new Integer[(100)];
         for (int x = -1; x < 99; x++) {
-            year[x+1] = calendarMy.get(Calendar.YEAR) - x;
+            year[x + 1] = calendarMy.get(Calendar.YEAR) - x;
         }
         int maxDey = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
         Integer[] deys = new Integer[maxDey];
@@ -116,7 +117,7 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
             combDey.setSelectedItem(Integer.parseInt(txtDatum.getText().substring(8, 10)));
         }
         panel.add(datum);
-        
+
         /// comboboxy end
         panel.add(new Label("Odkud :"));
         panel.add(txtOdkud);
@@ -130,16 +131,15 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
         panel.add(txtSpotreba);
 
         panel.add(new Label("Řidič :"));
-        String[] pole = getData("select PRIJMENI||'.'||substr(JMENO, 1, 1) from APP.DRIVER");
-        poleIdDriver = getDataInt("select DRIVERID from APP.DRIVER");
+        String[] pole = getData(DbAccess.DRIVER);
+        poleIdDriver = getDataInt(DbAccess.DRIVER);
 
         txtDriver.setModel(new javax.swing.DefaultComboBoxModel(pole));
         panel.add(txtDriver);
 
-
         panel.add(new Label("Auto :"));
-        pole = getData("select SPZ from APP.CAR");
-        poleIdCar = getDataInt("select CARID from APP.CAR");
+        pole = getData(DbAccess.CAR);
+        poleIdCar = getDataInt(DbAccess.CAR);
 
         txtCar.setModel(new javax.swing.DefaultComboBoxModel(pole));
         panel.add(txtCar);
@@ -173,8 +173,9 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
 
     }
 
-    private String[] getData(String prikaz) {
-        String[][] data_ = new DbAccess(true, prikaz).getData();
+    private String[] getData(int i) {
+        k.DbReadRideEdit(i, false);
+        String[][] data_ = k.getData();
         String[] data = new String[data_.length];
         for (int x = 0; x < data_.length; x++) {
             data[x] = data_[x][0];
@@ -183,14 +184,14 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
 
     }
 
-    private Integer[] getDataInt(String prikaz) {
-        String[][] data_ = new DbAccess(true, prikaz).getData();
+    private Integer[] getDataInt(int i) {
+        k.DbReadRideEdit(i, true);
+        String[][] data_ = k.getData();
         Integer[] data = new Integer[data_.length];
         for (int x = 0; x < data_.length; x++) {
             data[x] = Integer.parseInt(data_[x][0]);
         }
         return data;
-
     }
 
     @Override
@@ -210,79 +211,61 @@ public class RideAdd extends JDialog implements ActionListener, DocumentListener
                 }
             }
         } else {
-        if (ae.getActionCommand().equals("Cancel")) {
-            this.setVisible(false);
-        }
-        if (ae.getActionCommand().equals("OK")) {
-            ArrayList<JTextField> aray = new ArrayList<JTextField>();
-            txtVzdalenost.setName("vzdálenost");
-            txtSpotreba.setName("spotřeba");
-            txtOdkud.setName("odkud");
-            txtKam.setName("kam");
-            txtDuvod.setName("duvod");
-            txtDatum.setName("datum");
-
-            txtDatum.setText(combYear.getSelectedItem() + "-" + (((Integer) combMonth.getSelectedItem())) + "-" + combDey.getSelectedItem());
-            
-            aray.add(txtDatum);
-            aray.add(txtOdkud);
-            aray.add(txtKam);
-            aray.add(txtDuvod);
-
-            try {
-                new MyExceptionDetector(aray, MyExceptionDetector.RIDE_ADD_EDIT);
-                Integer intVzdalenost = null;
-                if (!"".equals(txtVzdalenost.getText())) {
-                    try{
-                    intVzdalenost = Integer.parseInt(txtVzdalenost.getText());
-                    }catch(NumberFormatException e){
-                        JOptionPane.showMessageDialog(null, "Vzdalenost muý být číslo");
-                        txtVzdalenost.setBackground(Color.RED);
-                        ok = false;
-                    }
-                    }
-                Integer intSpotreba = null;
-                if (!"".equals(txtSpotreba.getText())) {
-                    intSpotreba = Integer.parseInt(txtSpotreba.getText());
-                }
-                if(ok){
-                String prikaz;
-                if (edit) {
-                    prikaz = "UPDATE \"APP\".\"RIDE\"set DATUM_CESTY='" + txtDatum.getText() + "'"
-                            + ",ODKUD='" + txtOdkud.getText() + "'"
-                            + ",kam='" + txtKam.getText() + "'"
-                            + ",DUVOD_CESTY='" + txtDuvod.getText() + "'"
-                            + ",VZDALENOST=" + intVzdalenost + ""
-                            + ",SPOTREBA=" + intSpotreba + ""
-                            + ",DRIVERID=" + poleIdDriver[txtDriver.getSelectedIndex()] + ""
-                            + ",CARID=" + poleIdCar[txtCar.getSelectedIndex()] + ""
-                            + " where RIDEID =" + select;
-                } else {
-                    prikaz = "INSERT INTO \"APP\".\"RIDE\""
-                            + "(DATUM_CESTY,ODKUD,KAM,DUVOD_CESTY,VZDALENOST,SPOTREBA,DRIVERID,CARID)"
-                            + "VALUES('" + txtDatum.getText() + "',"
-                            + "'" + txtOdkud.getText() + "',"
-                            + "'" + txtKam.getText() + "',"
-                            + "'" + txtDuvod.getText() + "'"
-                            + "," + intVzdalenost + ","
-                            + "" + intSpotreba + ","
-                            + "" + poleIdDriver[txtDriver.getSelectedIndex()] + ","
-                            + "" + poleIdCar[txtCar.getSelectedIndex()] + ""
-                            + ")";
-                }
-                
-                new DbAccess(false, prikaz);
+            if (ae.getActionCommand().equals("Cancel")) {
                 this.setVisible(false);
-                }
-            } catch (MyException ex) {
-                if (ex.isShow()) {
-                    JOptionPane.showMessageDialog(this, ex.getException());
-                }
             }
-            
+            if (ae.getActionCommand().equals("OK")) {
+                ArrayList<JTextField> aray = new ArrayList<JTextField>();
+                txtVzdalenost.setName("vzdálenost");
+                txtSpotreba.setName("spotřeba");
+                txtOdkud.setName("odkud");
+                txtKam.setName("kam");
+                txtDuvod.setName("duvod");
+                txtDatum.setName("datum");
+
+                txtDatum.setText(combYear.getSelectedItem() + "-" + (((Integer) combMonth.getSelectedItem())) + "-" + combDey.getSelectedItem());
+
+                aray.add(txtDatum);
+                aray.add(txtOdkud);
+                aray.add(txtKam);
+                aray.add(txtDuvod);
+
+                try {
+                    new MyExceptionDetector(aray, MyExceptionDetector.RIDE_ADD_EDIT);
+                    Integer intVzdalenost = null;
+                    if (!"".equals(txtVzdalenost.getText())) {
+                        try {
+                            intVzdalenost = Integer.parseInt(txtVzdalenost.getText());
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(null, "Vzdalenost muý být číslo");
+                            txtVzdalenost.setBackground(Color.RED);
+                            ok = false;
+                        }
+                    }
+                    Integer intSpotreba = null;
+                    if (!"".equals(txtSpotreba.getText())) {
+                        intSpotreba = Integer.parseInt(txtSpotreba.getText());
+                    }
+                    if (ok) {
+                        String prikaz;
+                        if (edit) {
+
+                            k.DbWriteRideEdit(txtDatum.getText(), txtOdkud.getText(), txtKam.getText(), txtDuvod.getText(), intVzdalenost, intSpotreba, poleIdDriver[txtDriver.getSelectedIndex()], poleIdCar[txtCar.getSelectedIndex()], select);
+                        } else {
+
+                            k.DbWriteRideAdd(txtDatum.getText(), txtOdkud.getText(), txtKam.getText(), txtDuvod.getText(), intVzdalenost, intSpotreba, poleIdDriver[txtDriver.getSelectedIndex()], poleIdCar[txtCar.getSelectedIndex()]);
+                        }
+                        this.setVisible(false);
+                    }
+                } catch (MyException ex) {
+                    if (ex.isShow()) {
+                        JOptionPane.showMessageDialog(this, ex.getException());
+                    }
+                }
+
+            }
         }
-        }
-        }
+    }
 
     private void rePrintColor() {
         txtDatum.setBackground(Color.WHITE);
