@@ -47,7 +47,7 @@ public class DbAccess {// dřída zajistující přístup k DB
         DbRead(s);
         String[] colum = this.getColum();
         String[][] datCar = this.getData();
-        System.out.println(colum.length);
+   //     System.out.println(colum.length);
         for (int x = 0; x < datCar.length; x++) {
             DbRead("SELECT COUNT(*) AS Rides FROM APP.RIDE WHERE CARID =" + datCar[x][2]);
             datCar[x][2] = (getData()[0][0] + " x");
@@ -61,7 +61,7 @@ public class DbAccess {// dřída zajistující přístup k DB
         DbRead(s);
         String[] colum = this.getColum();
         String[][] datDriver = getData();
-        System.out.println(colum.length);
+      //  System.out.println(colum.length);
         for (int x = 0; x < datDriver.length; x++) {
             DbRead("SELECT COUNT(*) AS Rides FROM APP.RIDE WHERE DRIVERID =" + datDriver[x][2]);
             datDriver[x][2] = (getData()[0][0] + " x");
@@ -187,7 +187,7 @@ public class DbAccess {// dřída zajistující přístup k DB
     }
 
     public void DbRead(String prikaz) {// metoda pro čtení z databáze načte data podle příkazu a uloží do uložiště
-        System.out.println(prikaz);
+   //     System.out.println(prikaz);
 
         String url = "jdbc:derby:KJData";
         boolean ukoncit = false;
@@ -224,7 +224,7 @@ public class DbAccess {// dřída zajistující přístup k DB
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Chyba v databázy. \nProgram bude ukončem.");
-            System.out.println(prikaz);
+   //         System.out.println(prikaz);
             ukoncit = true;
         } finally {
 
