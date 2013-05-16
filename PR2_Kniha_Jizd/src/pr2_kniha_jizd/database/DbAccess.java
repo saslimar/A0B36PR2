@@ -273,7 +273,14 @@ public class DbAccess implements DbAccessInterface {// dřída zajistující př
         DbWrite(prikaz);
     }
 
-
+ public void DbWriteDriverAdd(String jmeno, String prijmeni, String datum) {
+        String prikaz = "INSERT INTO \"APP\".\"DRIVER\"(JMENO,PRIJMENI,DATUM_NAROZENI)"
+                + "VALUES("
+                + "'" + jmeno + "',"
+                + "'" + prijmeni + "',"
+                + "{d '" + datum + "'})";
+        DbWrite(prikaz);
+    }
     public void DbWriteRideEdit(String datum, String odkud, String kam, String duvod,
             Integer vzdalenost, Integer spotreba, Integer driverId, Integer carId, int select) {
         String prikaz = "UPDATE \"APP\".\"RIDE\"set DATUM_CESTY='" + datum + "'"
@@ -461,18 +468,5 @@ public class DbAccess implements DbAccessInterface {// dřída zajistující př
         //  text.setText(text.getText() + "\n");
         return s;
     }
-    // </editor-fold>
-
-    public void DbWriteDriverAdd(String jmeno, String prijmeni, String datum) {
-        String prikaz = "INSERT INTO \"APP\".\"DRIVER\"(JMENO,PRIJMENI,DATUM_NAROZENI)"
-                + "VALUES("
-                + "'" + jmeno + "',"
-                + "'" + prijmeni + "',"
-                + "{d '" + datum + "'})";
-        DbWrite(prikaz);
-    }
-
-    public void DbWriteD() {
-        System.out.println(" neco");
-    }
+    // </editor-fold>   
 }
